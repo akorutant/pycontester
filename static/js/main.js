@@ -55,10 +55,6 @@ async function evaluatePython() {
     let result = pyodide.runPython(editor.getValue());
     let stdout = pyodide.runPython("sys.stdout.getvalue()");
     addToOutput(stdout);
-
-    console.log(editor.getValue());
-    console.log(result);
-    console.log(stdout);
   } catch (err) {
     addToOutput(err);
   }
