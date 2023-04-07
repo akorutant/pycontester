@@ -21,8 +21,8 @@
   2.2 Teachers с полями: id, user_id,
   2.3 Contests с полями: id, title, description,
   2.4 Answers с полями: id, contest_id, true_answer.
-``
-  
+```
+
 > 3. При помощи микрофреймворка Flask реализовать сайт и его работоспособность:
 ```
   1. Регистрация и авторизация пользователей,
