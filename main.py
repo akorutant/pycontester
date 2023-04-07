@@ -72,6 +72,11 @@ def login():
     return render_template('login.html', title='Авторизация', form=form)
 
 
+@app.rout("/account/<int:user_id>")
+def account(user_id):
+    pass
+
+
 @app.route('/logout')
 @login_required
 def logout():
