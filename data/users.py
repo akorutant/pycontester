@@ -12,14 +12,16 @@ class User(SqlAlchemyBase, UserMixin):
 
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
-    login = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    firstname = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    surname = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    patronymic = sqlalchemy.Column(sqlalchemy.String, nullable=True)  # отчество
-    job_title = sqlalchemy.Column(sqlalchemy.String, nullable=True)  # должность пользователя (ученик/учитель (и др.))
+    login = sqlalchemy.Column(sqlalchemy.String, nullable=False)
+    firstname = sqlalchemy.Column(sqlalchemy.String, nullable=False)
+    surname = sqlalchemy.Column(sqlalchemy.String, nullable=False)
+    patronymic = sqlalchemy.Column(sqlalchemy.String, nullable=False)  # отчество
+    job_title = sqlalchemy.Column(sqlalchemy.String, nullable=False)  # должность пользователя (ученик/учитель (и др.))
     email = sqlalchemy.Column(sqlalchemy.String,
-                              index=True, unique=True, nullable=True)
-    hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+                              index=True, unique=True, nullable=False)
+    hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=False)
+    count_contests = sqlalchemy.Column(sqlalchemy.Integer, nullable=False, default=0)
+    count_wins = sqlalchemy.Column(sqlalchemy.Integer, nullable=False, default=0)
     created_date = sqlalchemy.Column(sqlalchemy.DateTime,
                                      default=datetime.datetime.now)
 
