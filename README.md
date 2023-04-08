@@ -17,7 +17,7 @@
   
 > 2. База данных с таблицами:
 ```
-  2.1 Users с полями: id, login, firstname, surname, patronymic, job_title, email, hashed_password, created_date,
+  2.1 Users с полями: id, login, firstname, surname, patronymic, job_title, email, count_contest, count_wins, hashed_password, created_date,
   2.2 Teachers с полями: id, user_id,
   2.3 Contests с полями: id, title, description,
   2.4 Answers с полями: id, contest_id, true_answer.
