@@ -45,6 +45,7 @@ def reqister():
             firstname=form.firstname.data,
             surname=form.surname.data,
             patronymic=form.patronymic.data,
+            job_title=form.job_title.data,
             email=form.email.data
         )
         user.set_password(form.password.data)
@@ -72,9 +73,17 @@ def login():
     return render_template('login.html', title='Авторизация', form=form)
 
 
-@app.rout("/account/<int:user_id>")
+@app.route("/account/<int:user_id>")
 def account(user_id):
     pass
+
+
+@app.route("/code")
+def code():
+    if current_user.is_authenticated:
+        return render_template('index2.html')
+    else:
+        return redirect("/")
 
 
 @app.route('/logout')
