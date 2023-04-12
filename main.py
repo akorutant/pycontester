@@ -23,6 +23,7 @@ def load_user(user_id):
 
 
 @app.route('/')
+@app.route('/main')
 def index():
     return render_template('index.html')
 
@@ -56,10 +57,9 @@ def reqister():
         db_sess.commit()
 
         if form.job_title.data == "teacher":
-            user_id = db_sess.query(User).filter_by(email=form.email.data).first()
-            print(user_id)
+            user = db_sess.query(User).filter_by(email=form.email.data).first()
             teacher = Teacher(
-                user_id=user_id
+                user_id=user.id
             )
             db_sess.add(teacher)
             db_sess.commit()
