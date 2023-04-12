@@ -3,7 +3,7 @@ import sqlalchemy
 from .db_session import SqlAlchemyBase
 
 
-class Contests(SqlAlchemyBase):
+class Contest(SqlAlchemyBase):
     __tablename__ = "contests"
 
     id = sqlalchemy.Column(sqlalchemy.Integer,

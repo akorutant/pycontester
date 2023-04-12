@@ -4,7 +4,7 @@ from sqlalchemy import orm
 from .db_session import SqlAlchemyBase
 
 
-class Teachers(SqlAlchemyBase):
+class Teacher(SqlAlchemyBase):
     __tablename__ = "teachers"
 
     id = sqlalchemy.Column(sqlalchemy.Integer,

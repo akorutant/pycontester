@@ -4,7 +4,7 @@ from sqlalchemy import orm
 from .db_session import SqlAlchemyBase
 
 
-class Answers(SqlAlchemyBase):
+class Answer(SqlAlchemyBase):
     __tablename__ = "answers"
 
     id = sqlalchemy.Column(sqlalchemy.Integer,
@@ -12,7 +12,7 @@ class Answers(SqlAlchemyBase):
     true_answers = sqlalchemy.Column(sqlalchemy.Boolean, nullable=False)
     contest_id = sqlalchemy.Column(sqlalchemy.Integer,
                                 sqlalchemy.ForeignKey('contests.id'))
-    contests = orm.relationship('Contests')
+    contests = orm.relationship('Contest')
 
 
 

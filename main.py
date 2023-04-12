@@ -4,6 +4,7 @@ from werkzeug.utils import redirect
 
 from data import db_session
 from data.users import User
+from data.teachers import Teacher
 from forms.login_form import LoginForm
 from forms.register_form import RegisterForm
 
@@ -49,10 +50,19 @@ def reqister():
             job_title=form.job_title.data,
             email=form.email.data
         )
-        print(form.job_title.data)
+
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
+
+        if form.job_title.data == "teacher":
+            user_id = db_sess.query(User).filter_by(email=form.email.data).first()
+            print(user_id)
+            teacher = Teacher(
+                user_id=user_id
+            )
+            db_sess.add(teacher)
+            db_sess.commit()
         return redirect('/login')
 
     return render_template('register.html', title='Регистрация', form=form)
