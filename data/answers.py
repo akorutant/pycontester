@@ -4,8 +4,8 @@ from sqlalchemy import orm
 from .db_session import SqlAlchemyBase
 
 
-class Contests(SqlAlchemyBase):
-    __tablename__ = "contests"
+class Answers(SqlAlchemyBase):
+    __tablename__ = "answers"
 
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)

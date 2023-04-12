@@ -12,6 +12,7 @@ app.config["SECRET_KEY"] = "fjkFOEKFMOKMFIO3FMKLMkelfmOIJR3FMFKNFOU2IN3PIFNOI232
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+db_session.global_init("database/db.sqlite")
 
 
 @login_manager.user_loader
