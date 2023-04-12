@@ -49,6 +49,7 @@ def reqister():
             job_title=form.job_title.data,
             email=form.email.data
         )
+        print(form.job_title.data)
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
