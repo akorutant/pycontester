@@ -4,8 +4,8 @@ from werkzeug.utils import redirect
 
 from data import db_session
 from data.users import User
-from forms.LoginForm import LoginForm
-from forms.user import RegisterForm
+from forms.login_form import LoginForm
+from forms.register_form import RegisterForm
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "fjkFOEKFMOKMFIO3FMKLMkelfmOIJR3FMFKNFOU2IN3PIFNOI232F"
