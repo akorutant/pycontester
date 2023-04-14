@@ -15,9 +15,9 @@
     </p>
 
     <p>
-        {{ form.firstname.label(class="text-white") }}<br>
-        {{ form.firstname(class="form-control") }}<br>
-        {% for error in form.firstname.errors %}
+        {{ form.surname.label(class="text-white") }}<br>
+        {{ form.surname(class="form-control") }}<br>
+        {% for error in form.surname.errors %}
             <p class="alert alert-danger" role="alert">
                 {{ error }}
             </p>
@@ -25,9 +25,9 @@
     </p>
 
     <p>
-        {{ form.surname.label(class="text-white") }}<br>
-        {{ form.surname(class="form-control") }}<br>
-        {% for error in form.surname.errors %}
+        {{ form.firstname.label(class="text-white") }}<br>
+        {{ form.firstname(class="form-control") }}<br>
+        {% for error in form.firstname.errors %}
             <p class="alert alert-danger" role="alert">
                 {{ error }}
             </p>

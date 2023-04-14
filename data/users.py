@@ -1,8 +1,7 @@
-import datetime
-
 import sqlalchemy
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
 
 from .db_session import SqlAlchemyBase
 
@@ -23,7 +22,7 @@ class User(SqlAlchemyBase, UserMixin):
     count_contests = sqlalchemy.Column(sqlalchemy.Integer, nullable=False, default=0)
     count_wins = sqlalchemy.Column(sqlalchemy.Integer, nullable=False, default=0)
     created_date = sqlalchemy.Column(sqlalchemy.DateTime,
-                                     default=datetime.datetime.now)
+                                     default=datetime.now)
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)

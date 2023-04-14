@@ -8,6 +8,7 @@ from data.teachers import Teacher
 from forms.login_form import LoginForm
 from forms.register_form import RegisterForm
 
+
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "fjkFOEKFMOKMFIO3FMKLMkelfmOIJR3FMFKNFOU2IN3PIFNOI232F"
 
@@ -87,7 +88,7 @@ def login():
 
 @app.route("/account/<int:user_id>")
 def account(user_id):
-    pass
+    return render_template('personal_area.html')
 
 
 @app.route("/code")

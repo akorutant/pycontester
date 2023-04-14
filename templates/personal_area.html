@@ -1,32 +1,4 @@
-<!DOCTYPE html>
-<html lang="ru">
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-      crossorigin="anonymous"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
-      crossorigin="anonymous"
-    />
-
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-    />
-
-    <link rel="stylesheet" href="../static/css/style.css" />
-    <title>{{title}}</title>
-  </head>
+{% extends "base.html" %} {% block content %}
   <body class="navbar-background">
     <div
       class="d-flex flex-sm-column flex-md-row p-3"
@@ -39,10 +11,14 @@
             class="card-img-top"
           />
           <div class="card-body text-center">
-            <h5 style="margin-bottom: 0">Артемій Сайолите</h5>
-            <p>@sayolight</p>
+            <h5 style="margin-bottom: 0">{{ current_user.surname }} {{ current_user.firstname }} {{ current_user.patronymic }}</h5>
+            <p>{{ current_user.login }}</p>
             <hr />
+            {% if current_user.job_title == 'teacher' %}
+            <p>Учитель</p>
+            {% elif current_user.job_title == 'student' %}
             <p>Ученик</p>
+            {% endif %}
           </div>
         </div>
       </div>
@@ -84,19 +60,7 @@
           </div>
         </div>
 
-        <a class="btn btn-danger text-white w-100 mt-4">Выйти</a>
+        <a class="btn btn-danger text-white w-100 mt-4" href="/logout">Выйти</a>
       </div>
     </div>
-
-    <script
-      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"
-      integrity="sha384-zYPOMqeu1DAVkHiLqWBUTcbYfZ8osu1Nd6Z89ify25QV9guujx43ITvfi12/QExE"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.min.js"
-      integrity="sha384-Y4oOpwW3duJdCWv5ly8SCFYWqFDsfob/3GkgExXKV4idmbt98QcxXYs9UoXAB7BZ"
-      crossorigin="anonymous"
-    ></script>
-  </body>
-</html>
+{% endblock %}
