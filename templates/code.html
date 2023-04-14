@@ -1,0 +1,40 @@
+{% extends "base.html" %} {% block content %}
+  <body class="navbar-background">
+    <div class="container-fluid code-container mt-3">
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <button
+            id="run"
+            type="button"
+            onclick="evaluatePython()"
+            class="btn btn-primary"
+          >
+            🚀 Run
+          </button>
+          <button
+            id="clear"
+            type="button"
+            onclick="clearHistory()"
+            class="btn btn-danger"
+          >
+            🧹 Clear
+          </button>
+        </div>
+      </div>
+      <div class="codespace row">
+        <div class="col-md-6">
+          <textarea id="code" name="code"></textarea>
+        </div>
+        <div class="col-md-6">
+          <textarea
+            readonly
+            style="overflow: auto"
+            class="CodeMirror cm-s-dracula w-100"
+            id="output"
+            name="output"
+          ></textarea>
+        </div>
+      </div>
+    </div>
+
+{% endblock %}

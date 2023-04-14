@@ -1,3 +1,45 @@
 .navbar-background {
-	background-color: #0063A6;
-};
+  background-color: #0063a6;
+}
+.card-background {
+  cursor: pointer;
+  background-color: #004e81;
+}
+
+html,
+body,
+.code-container {
+  height: 95vh;
+}
+
+.codespace {
+  height: 65vh;
+}
+
+.CodeMirror {
+  height: 65vh;
+}
+
+/* @media screen and (max-width: 900px) {
+  .code {
+    width: 100%;
+    flex-direction: column !important;
+  }
+  .CodeMirror {
+    width: 100% !important;
+  }
+}
+@media screen and (min-width: 900px) {
+  .code {
+    height: 500px;
+  }
+  .input {
+    width: 75%;
+  }
+  .CodeMirror {
+    height: 100%;
+  }
+  .output {
+    border-left: 1px solid #0063a6 !important;
+  }
+} */

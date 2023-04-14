@@ -93,7 +93,7 @@ def account(user_id):
 @app.route("/code")
 def code():
     if current_user.is_authenticated:
-        return render_template('index2.html')
+        return render_template('code.html')
     else:
         return redirect("/")
 
