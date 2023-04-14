@@ -9,7 +9,7 @@ class RegisterForm(FlaskForm):
     firstname = StringField('Ваше имя', validators=[DataRequired()])
     patronymic = StringField('Ваше отчество', validators=[DataRequired()])
     job_title = RadioField('Кто вы?', choices=[('teacher', 'Учитель'), ('student', 'Ученик')],
-                           validators=[DataRequired()])
+                           validators=[DataRequired()], default='student')
     email = EmailField('Почта', validators=[DataRequired()])
     password = PasswordField('Пароль', validators=[DataRequired()])
     password_again = PasswordField('Повторите пароль', validators=[DataRequired()])

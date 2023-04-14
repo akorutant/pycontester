@@ -12,12 +12,12 @@
           />
           <div class="card-body text-center">
             <h5 style="margin-bottom: 0">{{ current_user.surname }} {{ current_user.firstname }} {{ current_user.patronymic }}</h5>
-            <p>{{ current_user.login }}</p>
+            <p>Логин: {{ current_user.login }}</p>
             <hr />
             {% if current_user.job_title == 'teacher' %}
-            <p>Учитель</p>
+            <span class="badge rounded-pill text-bg-primary">Учитель</span>
             {% elif current_user.job_title == 'student' %}
-            <p>Ученик</p>
+            <span class="badge rounded-pill text-bg-primary">Ученик</span>
             {% endif %}
           </div>
         </div>

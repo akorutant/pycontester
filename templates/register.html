@@ -6,7 +6,7 @@
     {{ form.hidden_tag() }}
     <p>
         {{ form.login.label(class="text-white") }}<br>
-        {{ form.login(class="form-control") }}<br>
+        {{ form.login(class="form-control col-auto") }}<br>
         {% for error in form.login.errors %}
             <p class="alert alert-danger" role="alert">
                 {{ error }}
