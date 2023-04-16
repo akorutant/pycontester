@@ -7,7 +7,8 @@ from data.users import User
 from data.teachers import Teacher
 from forms.login_form import LoginForm
 from forms.register_form import RegisterForm
-
+from forms.change_password_form import ChangePasswordForm
+from forms.change_avatar_form import ChangeAvatarForm
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "fjkFOEKFMOKMFIO3FMKLMkelfmOIJR3FMFKNFOU2IN3PIFNOI232F"
@@ -26,7 +27,7 @@ def load_user(user_id):
 @app.route('/')
 @app.route('/main')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', title="Главная")
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -86,17 +87,53 @@ def login():
     return render_template('login.html', title='Авторизация', form=form)
 
 
-@app.route("/account/<int:user_id>")
+@app.route("/account/<int:user_id>", methods=['GET', 'POST'])
 def account(user_id):
-    return render_template('personal_area.html')
+    if current_user.id == user_id:
+        form_change_password = ChangePasswordForm()
+        form_change_avatar = ChangeAvatarForm()
+        if form_change_avatar.validate_on_submit():
+            print(form_change_avatar.avatar.data)
+        if form_change_password.validate_on_submit() and form_change_avatar.validate_on_submit():
+            db_sess = db_session.create_session()
+            user = db_sess.query(User).filter(User.id == current_user.id).first()
+            if user and user.check_password(form_change_password.old_password.data):
+                if form_change_password.new_password.data == form_change_password.repeated_new_password:
+                    user.set_password(form_change_password.repeated_new_password)
+                    db_sess.commit()
+                    return render_template('personal_area.html',
+                                           message="Пароль изменен",
+                                           form_change_password=form_change_password)
+
+                return render_template('personal_area.html',
+                                       message="Пароли не совпадают",
+                                       form_change_password=form_change_password,
+                                       form_change_avatar=form_change_avatar)
+
+            return render_template('personal_area.html',
+                                   message="Неправильный пароль",
+                                   form_change_password=form_change_password,
+                                   form_change_avatar=form_change_avatar)
+
+        return render_template('personal_area.html',
+                               title="Аккаунт",
+                               form_change_password=form_change_password,
+                               form_change_avatar=form_change_avatar)
+    return redirect("/register")
 
 
 @app.route("/code")
 def code():
     if current_user.is_authenticated:
         return render_template('code.html')
-    else:
-        return redirect("/")
+    return redirect("/register")
+
+
+@app.route("/contests")
+def contests():
+    if current_user.is_authenticated:
+        return render_template('contests.html')
+    return redirect("/register")
 
 
 @app.route('/logout')
@@ -108,4 +145,4 @@ def logout():
 
 if __name__ == '__main__':
     db_session.global_init("db/database.sqlite")
-    app.run(debug=True)
+    app.run(debug=True, port=8000)

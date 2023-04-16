@@ -1,5 +1,23 @@
 {% extends "base.html" %} {% block content %}
 
+ <div class="container-fluid code-container mt-3 text-white">
+      <h1>Список соревноваий</h1>
 
+      <div class="card card-background mb-3">
+        <div class="card-header text-white">Название</div>
+        <div class="card-body text-white">
+          <p class="card-text">Описание</p>
+          <a href="/code" class="btn btn-primary">Участвовать</a>
+        </div>
+      </div>
+
+      <div class="card card-background mb-3 text-white">
+        <div class="card-header">Название</div>
+        <div class="card-body">
+          <p class="card-text">Описание</p>
+          <a href="/code" class="btn btn-primary">Участвовать</a>
+        </div>
+      </div>
+    </div>
 
 {% endblock %}

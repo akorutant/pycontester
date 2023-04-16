@@ -1,40 +1,71 @@
-{% extends "base.html" %} {% block content %}
-  <body class="navbar-background">
-    <div class="container-fluid code-container mt-3">
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <button
-            id="run"
-            type="button"
-            onclick="evaluatePython()"
-            class="btn btn-primary"
-          >
-            🚀 Run
-          </button>
-          <button
-            id="clear"
-            type="button"
-            onclick="clearHistory()"
-            class="btn btn-danger"
-          >
-            🧹 Clear
-          </button>
+{% extends "base.html" %}
+
+{% block import %}
+<link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.css"
+/>
+
+<script src="https://cdn.jsdelivr.net/pyodide/v0.20.0/full/pyodide.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/mode/javascript/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/addon/edit/closebrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.3/mode/python/python.min.js"></script>
+<link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.3/theme/dracula.css"
+/>
+
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid code-container mt-3">
+    <div class="row mb-3 text-white">
+        <div class="col">
+            <h1>Условие:</h1>
+            <p>
+                Уолтер Вайт решил произвести метамфетамин в своей лаборатории. Он
+                знает, что для производства 1 фунта метамфетамина ему нужно 2
+                галлона метиламина и 6 галлонов фосфорного кислоты. У него есть
+                только 1 галлон метиламина и 4 галлона фосфорной кислоты. Сколько
+                фунтов метамфетамина он может произвести?
+            </p>
         </div>
-      </div>
-      <div class="codespace row">
+    </div>
+    <div class="row mb-3">
         <div class="col-md-6">
-          <textarea id="code" name="code"></textarea>
+            <button
+                    id="run"
+                    type="button"
+                    onclick="evaluatePython()"
+                    class="btn btn-primary"
+            >
+                🚀 Run
+            </button>
+            <button
+                    id="clear"
+                    type="button"
+                    onclick="clearHistory()"
+                    class="btn btn-danger"
+            >
+                🧹 Clear
+            </button>
+        </div>
+    </div>
+    <div class="codespace row">
+        <div class="col-md-6">
+            <textarea id="code" name="code"></textarea>
         </div>
         <div class="col-md-6">
           <textarea
-            readonly
-            style="overflow: auto"
-            class="CodeMirror cm-s-dracula w-100"
-            id="output"
-            name="output"
+                  readonly
+                  style="overflow: auto"
+                  class="CodeMirror cm-s-dracula w-100"
+                  id="output"
+                  name="output"
           ></textarea>
         </div>
-      </div>
     </div>
-
+</div>
 {% endblock %}

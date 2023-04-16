@@ -1,7 +1,7 @@
-{% extends "base.html" %} {% block content %}
-  <body class="navbar-background">
+{% extends "base.html" %}
+{% block content %}
     <div
-      class="d-flex flex-sm-column flex-md-row p-3"
+      class="d-flex flex-column flex-md-row p-3"
       style="justify-content: center"
     >
       <div class="p-3">
@@ -24,43 +24,78 @@
       </div>
       <div class="p-3">
         <div class="card card-background text-white" style="width: 20rem">
-          <div class="card-body">
-            <h4 class="card-title">Сменить пароль</h4>
-            <input
-              type="password"
-              class="form-control"
-              placeholder="Новый пароль"
-            />
-            <input
-              type="password"
-              class="form-control mt-1"
-              placeholder="Повторите новый пароль"
-            />
-            <input
-              type="submit"
-              class="btn btn-primary w-100 mt-1"
-              value="Сменить"
-            />
-          </div>
+            <div class="card-body">
+                <h4 class="card-title">Сменить пароль</h4>
+                <form action="" method="post">
+                    {{ form_change_password.hidden_tag() }}
+                    <p>
+                        {{ form_change_password.old_password(class="form-control", type="password") }}
+                        {% for error in form_change_password.old_password.errors %}
+                            <div class="alert alert-danger" role="alert">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+                    </p>
+
+                    <p>
+                        {{ form_change_password.new_password(class="form-control mt-1", type="password") }}
+                        {% for error in form_change_password.new_password.errors %}
+                            <div class="alert alert-danger" role="alert">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+                    </p>
+
+                    <p>
+                        {{ form_change_password.repeated_new_password(class="form-control mt-1", type="password") }}
+                        {% for error in form_change_password.repeated_new_password.errors %}
+                            <div class="alert alert-danger" role="alert">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+                    </p>
+
+                    <p>{{ form_change_password.submit(type="submit", class="btn btn-primary") }}</p>
+                    <div class="text-white">{{ message }}</div>
+                </form>
+            </div>
         </div>
 
         <div class="card card-background text-white mt-3" style="width: 20rem">
           <div class="card-body">
             <h4 class="card-title">Сменить аватарку</h4>
-            <input
-              type="file"
-              class="form-control"
-              placeholder="Новый пароль"
-            />
-            <input
-              type="submit"
-              class="btn btn-primary w-100 mt-1"
-              value="Сменить"
-            />
+              <form action="" method="post">
+                  {{ form_change_avatar.hidden_tag() }}
+                  <p>
+                        {{ form_change_avatar.avatar(class="form-control", type="file") }}
+                        {% for error in form_change_avatar.avatar.errors %}
+                            <div class="alert alert-danger" role="alert">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+                  </p>
+                    <p>{{ form_change_avatar.submit(type="submit", class="btn btn-primary") }}</p>
+                    <div class="text-white">{{ message }}</div>
+              </form>
           </div>
         </div>
 
-        <a class="btn btn-danger text-white w-100 mt-4" href="/logout">Выйти</a>
+        <a class="btn btn-danger text-white w-100 mt-4">Выйти</a>
+      </div>
+      <div class="p-3">
+        <div class="card card-background text-white" style="width: 20rem">
+          <div class="card-body">
+            <h5 style="margin-bottom: 0">Сертификаты</h5>
+            <div class="card mt-3 card-background text-white">
+              <div class="card-body">"Сертифякат №1"</div>
+            </div>
+
+            <div class="card mt-3 card-background text-white">
+              <div class="card-body">"Сертифякат №2"</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 {% endblock %}
+
