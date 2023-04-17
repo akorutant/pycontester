@@ -1,6 +1,6 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, make_response
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from werkzeug.utils import redirect
+from werkzeug.utils import redirect, secure_filename
 
 from data import db_session
 from data.users import User
@@ -90,28 +90,34 @@ def login():
 @app.route("/account/<int:user_id>", methods=['GET', 'POST'])
 def account(user_id):
     if current_user.id == user_id:
+        db_sess = db_session.create_session()
+        user = db_sess.query(User).filter(User.id == current_user.id).first()
         form_change_password = ChangePasswordForm()
         form_change_avatar = ChangeAvatarForm()
         if form_change_avatar.validate_on_submit():
-            print(form_change_avatar.avatar.data)
-        if form_change_password.validate_on_submit() and form_change_avatar.validate_on_submit():
-            db_sess = db_session.create_session()
-            user = db_sess.query(User).filter(User.id == current_user.id).first()
+            user_photo = form_change_avatar.avatar.data
+            if user_photo:
+                user.avatar = user_photo.read()
+                db_sess.commit()
+            return redirect(f"/account/{current_user.id}")
+
+        elif form_change_password.validate_on_submit():
             if user and user.check_password(form_change_password.old_password.data):
-                if form_change_password.new_password.data == form_change_password.repeated_new_password:
-                    user.set_password(form_change_password.repeated_new_password)
+                if form_change_password.new_password.data == form_change_password.repeated_new_password.data:
+                    user.set_password(form_change_password.repeated_new_password.data)
                     db_sess.commit()
                     return render_template('personal_area.html',
-                                           message="Пароль изменен",
-                                           form_change_password=form_change_password)
+                                           message_for_password_form="Пароль изменен",
+                                           form_change_password=form_change_password,
+                                           form_change_avatar=form_change_avatar)
 
                 return render_template('personal_area.html',
-                                       message="Пароли не совпадают",
+                                       message_for_password_form="Пароли не совпадают",
                                        form_change_password=form_change_password,
                                        form_change_avatar=form_change_avatar)
 
             return render_template('personal_area.html',
-                                   message="Неправильный пароль",
+                                   message_for_password_form="Неправильный пароль",
                                    form_change_password=form_change_password,
                                    form_change_avatar=form_change_avatar)
 
@@ -141,6 +147,17 @@ def contests():
 def logout():
     logout_user()
     return redirect("/")
+
+
+@app.route("/user_avatar")
+@login_required
+def user_avatar():
+    img = current_user.avatar
+    if not img:
+        return ""
+    h = make_response(img)
+    h.headers['Content-Type'] = 'image/png'
+    return h
 
 
 if __name__ == '__main__':
