@@ -1,4 +1,4 @@
-from flask import Flask, render_template, make_response
+from flask import Flask, render_template, make_response, request
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.utils import redirect, secure_filename
 
@@ -9,6 +9,8 @@ from forms.login_form import LoginForm
 from forms.register_form import RegisterForm
 from forms.change_password_form import ChangePasswordForm
 from forms.change_avatar_form import ChangeAvatarForm
+
+from rate_function import get_current_rate
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "fjkFOEKFMOKMFIO3FMKLMkelfmOIJR3FMFKNFOU2IN3PIFNOI232F"
@@ -27,7 +29,7 @@ def load_user(user_id):
 @app.route('/')
 @app.route('/main')
 def index():
-    return render_template('index.html', title="Главная")
+    return render_template('index.html', title="Главная", rate="81") # rate=get_current_rate() убрал т.к у апи ограничение
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -95,11 +97,18 @@ def account(user_id):
         form_change_password = ChangePasswordForm()
         form_change_avatar = ChangeAvatarForm()
         if form_change_avatar.validate_on_submit():
-            user_photo = form_change_avatar.avatar.data
+            user_photo = request.files['avatar']
             if user_photo:
                 user.avatar = user_photo.read()
                 db_sess.commit()
-            return redirect(f"/account/{current_user.id}")
+                return render_template('personal_area.html',
+                                       message_for_avatar_form="Аватар обновлен",
+                                       form_change_password=form_change_password,
+                                       form_change_avatar=form_change_avatar)
+            return render_template('personal_area.html',
+                                   message_for_avatar_form="Вы не прикрепили файл",
+                                   form_change_password=form_change_password,
+                                   form_change_avatar=form_change_avatar)
 
         elif form_change_password.validate_on_submit():
             if user and user.check_password(form_change_password.old_password.data):
@@ -125,6 +134,7 @@ def account(user_id):
                                title="Аккаунт",
                                form_change_password=form_change_password,
                                form_change_avatar=form_change_avatar)
+
     return redirect("/register")
 
 
@@ -162,4 +172,4 @@ def user_avatar():
 
 if __name__ == '__main__':
     db_session.global_init("db/database.sqlite")
-    app.run(debug=True, port=8000)
+    app.run(debug=True, port=8080)

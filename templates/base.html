@@ -71,6 +71,11 @@
                     <li class="nav-item">
                         <a class="nav-link text-white" href="#">Поддержка</a>
                     </li>
+                    <li>
+                        <p class="nav-link text-white">
+                            USD: {{ rate }}
+                        </p>
+                    </li>
                 </ul>
                 <div>
                     {% if current_user.is_authenticated %}

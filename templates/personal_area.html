@@ -65,10 +65,10 @@
         <div class="card card-background text-white mt-3" style="width: 20rem">
           <div class="card-body">
             <h4 class="card-title">Сменить аватарку</h4>
-              <form action="" method="post">
+              <form action="" method="post" enctype="multipart/form-data">
                   {{ form_change_avatar.hidden_tag() }}
                   <p>
-                        {{ form_change_avatar.avatar(class="form-control", type="file") }}
+                        {{ form_change_avatar.avatar(type="file", class="form-control") }}
                         {% for error in form_change_avatar.avatar.errors %}
                             <div class="alert alert-danger" role="alert">
                                 {{ error }}
@@ -76,7 +76,7 @@
                         {% endfor %}
                   </p>
                     <p>{{ form_change_avatar.submit(type="submit", class="btn btn-primary") }}</p>
-                    <div class="text-white">{{ message }}</div>
+                    <div class="text-white">{{ message_for_avatar_form }}</div>
               </form>
           </div>
         </div>
