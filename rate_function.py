@@ -1,10 +1,18 @@
 import requests
 
 
-def get_current_rate():
-    url = "https://api.apilayer.com/fixer/convert?to=RUB&from=USD&amount=1"
-    header = {"apikey": "M3ZLsRpZnrb80mAb6ZobImQWTo8oe2qg"}
+class APICurrencyRates:
+    def __init__(self, api_key, to_currency, from_currency, amount):
+        self.api_key = api_key
+        self.to_currency = to_currency
+        self.from_currency = from_currency
+        self.amount = amount
 
-    response = requests.get(url, headers=header)
-    response = response.json()
-    return response['info']['rate']
+    def get_current_rate(self):
+        url = f"https://api.apilayer.com/fixer/convert?to={self.to_currency}" \
+              f"&from={self.from_currency}&amount={self.amount}"
+        header = {"apikey": self.api_key}
+
+        response = requests.get(url, headers=header)
+        response = response.json()
+        return response['info']['rate']

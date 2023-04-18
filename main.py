@@ -10,15 +10,17 @@ from forms.register_form import RegisterForm
 from forms.change_password_form import ChangePasswordForm
 from forms.change_avatar_form import ChangeAvatarForm
 
-from rate_function import get_current_rate
+from rate_function import APICurrencyRates
 
 app = Flask(__name__)
+currency_rates = APICurrencyRates("M3ZLsRpZnrb80mAb6ZobImQWTo8oe2qg", "RUB", "USD", 1)
 app.config["SECRET_KEY"] = "fjkFOEKFMOKMFIO3FMKLMkelfmOIJR3FMFKNFOU2IN3PIFNOI232F"
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 db_session.global_init("database/db.sqlite")
 
+# TODO когда будем заливать на хост, то нужно в каждом роуте прописать rate=currency_rates.get_current_rate()
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -29,7 +31,7 @@ def load_user(user_id):
 @app.route('/')
 @app.route('/main')
 def index():
-    return render_template('index.html', title="Главная", rate="81") # rate=get_current_rate() убрал т.к у апи ограничение
+    return render_template('index.html', title="Главная", rate="81") # rate=currency_rates.get_current_rate() убрал т.к у апи ограничение
 
 
 @app.route('/register', methods=['GET', 'POST'])
