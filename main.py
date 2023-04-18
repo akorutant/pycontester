@@ -9,6 +9,7 @@ from forms.login_form import LoginForm
 from forms.register_form import RegisterForm
 from forms.change_password_form import ChangePasswordForm
 from forms.change_avatar_form import ChangeAvatarForm
+from forms.feedback_form import FeedbackForm
 
 from rate_function import APICurrencyRates
 
@@ -152,6 +153,14 @@ def contests():
     if current_user.is_authenticated:
         return render_template('contests.html')
     return redirect("/register")
+
+
+@app.route("/help")
+def help():
+    form = FeedbackForm()
+    if form.validate_on_submit():
+        return render_template('feedback.html', form=form)
+    return render_template('feedback.html', form=form)
 
 
 @app.route('/logout')
