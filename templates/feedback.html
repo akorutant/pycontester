@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="text-white">Обратная связь</h1>
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+
+    <p>
+        {{ form.firstname.label(class="text-white mb-2") }}
+        {{ form.firstname(class="form-control", placeholder="Имя") }}
+        {% for error in form.firstname.errors %}
+    <p class="alert alert-danger" role="alert">
+        {{ error }}
+    </p>
+    {% endfor %}
+    </p>
+
+    <p>
+        {{ form.surname.label(class="text-white mb-2") }}
+        {{ form.surname(class="form-control", placeholder="Фамилия") }}
+        {% for error in form.surname.errors %}
+    <p class="alert alert-danger" role="alert">
+        {{ error }}
+    </p>
+    {% endfor %}
+    </p>
+
+    <p>
+        {{ form.email.label(class="text-white mb-2") }}
+        {{ form.email(class="form-control", type="email", placeholder="email@gmail.com") }}
+        {% for error in form.email.errors %}
+    <p class="alert alert-danger" role="alert">
+        {{ error }}
+    </p>
+    {% endfor %}
+    </p>
+    </p>
+
+    <p>
+        {{ form.user_message.label(class="text-white mb-2") }}
+        {{ form.user_message(class="form-control", placeholder="Сообщение...")}}
+        {% for error in form.user_message.errors %}
+
+        {{ error }}
+    <p class="alert alert-danger" role="alert">
+    </p>
+    {% endfor %}
+    </p>
+
+    <p>{{ form.submit(type="submit", class="btn btn-primary mt-3") }}</p>
+    {{message}}
+</form>
+{% endblock %}
