@@ -5,6 +5,7 @@ from werkzeug.utils import redirect, secure_filename
 from data import db_session
 from data.users import User
 from data.teachers import Teacher
+from data.contests import Contest
 from forms.login_form import LoginForm
 from forms.register_form import RegisterForm
 from forms.change_password_form import ChangePasswordForm
@@ -21,6 +22,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 db_session.global_init("database/db.sqlite")
 
+
 # TODO когда будем заливать на хост, то нужно в каждом роуте прописать rate=currency_rates.get_current_rate()
 
 @login_manager.user_loader
@@ -32,7 +34,8 @@ def load_user(user_id):
 @app.route('/')
 @app.route('/main')
 def index():
-    return render_template('index.html', title="Главная", rate="81") # rate=currency_rates.get_current_rate() убрал т.к у апи ограничение
+    return render_template('index.html', title="Главная",
+                           rate="81")  # rate=currency_rates.get_current_rate() убрал т.к у апи ограничение
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -151,7 +154,9 @@ def code():
 @app.route("/contests")
 def contests():
     if current_user.is_authenticated:
-        return render_template('contests.html')
+        db_sess = db_session.create_session()
+        contests_list = db_sess.query(Contest).all()
+        return render_template('contests.html', contests=contests_list)
     return redirect("/register")
 
 
@@ -161,6 +166,15 @@ def help():
     if form.validate_on_submit():
         return render_template('feedback.html', form=form)
     return render_template('feedback.html', form=form)
+
+
+@app.route("/contests/<int:contest_id>")
+def contest_code(contest_id):
+    if current_user.is_authenticated:
+        db_sess = db_session.create_session()
+        contest1 = db_sess.query(Contest).filter(Contest.id == contest_id).first()
+        return render_template('contest_code.html', contest=contest1)
+    return redirect("/register")
 
 
 @app.route('/logout')
