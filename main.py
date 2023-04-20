@@ -177,6 +177,11 @@ def contest_code(contest_id):
     return redirect("/register")
 
 
+@app.route("/results")
+def results():
+    return render_template("results.html")
+
+
 @app.route('/logout')
 @login_required
 def logout():
