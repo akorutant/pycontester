@@ -40,9 +40,10 @@ def index():
 
 
 @app.route('/register', methods=['GET', 'POST'])
-@login_required
 def reqister():
     form = RegisterForm()
+    if current_user.is_authenticated:
+        return redirect("/")
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
             return render_template('register.html', title='Регистрация',
@@ -79,9 +80,10 @@ def reqister():
 
 
 @app.route("/login", methods=['GET', 'POST'])
-@login_required
 def login():
     form = LoginForm()
+    if current_user.is_authenticated:
+        return redirect("/")
     if form.validate_on_submit():
         db_sess = db_session.create_session()
         user = db_sess.query(User).filter(User.email == form.email.data).first()
