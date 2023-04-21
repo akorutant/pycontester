@@ -2,6 +2,7 @@
 Итоговый проект в htmlacademy
 
 паспорт проекта: https://docs.google.com/document/d/1vIgU5lKSHg4Yn4u2G2ot0JSs_7iL4Z9YxwQrsQ0WctA/edit?usp=sharing
+презентация: https://docs.google.com/presentation/d/1_YkY2RKYXam6-DxViPX-MNF5g3dfh-Cj8B4Pe7zR9vM/edit?usp=sharing
 
 
 сделаю типо коммит, чтоб была иллюзия работы
