@@ -1,4 +1,4 @@
-{% extends "base.html "%} {% block content %}
+{% extends "base.html" %} {% block content %}
 <h1 class="text-white">Создание конкурса</h1>
 <form action="" method="post">
     {{ form.hidden_tag() }}
@@ -15,22 +15,6 @@
         {{ form.contest_description.label(class="text-white") }}<br>
         {{ form.contest_description(class="form-control", type="textarea") }}<br>
         {% for error in form.contest_description.errors %}
-    <div class="alert alert-danger" role="alert">
-        {{ error }}
-    </div>
-    {% endfor %}
-        <p>
-        {{ form.contest_input.label(class="text-white") }}<br>
-        {{ form.contest_input(class="form-control", type="textarea") }}<br>
-        {% for error in form.contest_input.errors %}
-    <div class="alert alert-danger" role="alert">
-        {{ error }}
-    </div>
-    {% endfor %}
-        <p>
-        {{ form.contest_output.label(class="text-white") }}<br>
-        {{ form.contest_output(class="form-control", type="textarea") }}<br>
-        {% for error in form.contest_output.errors %}
     <div class="alert alert-danger" role="alert">
         {{ error }}
     </div>

@@ -1,5 +1,6 @@
 {% extends "base.html" %} {% block content %}
 
+    {% if contests %}
 <div class="container-fluid code-container mt-3 text-white">
     <h1>Список соревноваий</h1>
     {% for contest in contests %}
@@ -11,6 +12,8 @@
         </div>
     </div>
     {% endfor %}
-</div>
-
+    </div>
+    {% else %}
+    <h1 class="text-white">В данный момент нет соревнований</h1>
+    {% endif %}
 {% endblock %}

@@ -35,7 +35,7 @@
 
     {% block import %} {% endblock %}
 
-    <link rel="stylesheet" href="../static/css/style.css"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
     <title>{{title}}</title>
 </head>
 <body class="navbar-background">
@@ -72,7 +72,7 @@
                     </li>
                     {% if current_user.job_title == "teacher" %}
                     <li>
-                        <a class="nav-link text-white" href="../../contests/add">Мои конкурсы</a>
+                        <a class="nav-link text-white" href="../../contests/teacher_list">Мои конкурсы</a>
                     </li>
                     {% else %}
                     <li>
@@ -156,7 +156,7 @@
                     </p>
                     {% if current_user.job_title == "teacher" %}
                     <p>
-                        <a class="nav-link text-white" href="../../contests/add">Мои конкурсы</a>
+                        <a class="nav-link text-white" href="../../contests/teacher_list">Мои конкурсы</a>
                     </p>
                     {% else %}
                     <p>
