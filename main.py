@@ -11,6 +11,7 @@ from forms.register_form import RegisterForm
 from forms.change_password_form import ChangePasswordForm
 from forms.change_avatar_form import ChangeAvatarForm
 from forms.feedback_form import FeedbackForm
+from forms.add_contest_form import AddContestForm
 
 from rate_function import APICurrencyRates
 
@@ -39,9 +40,8 @@ def index():
 
 
 @app.route('/register', methods=['GET', 'POST'])
+@login_required
 def reqister():
-    if current_user.is_authenticated:
-        return redirect("/")
     form = RegisterForm()
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
@@ -79,9 +79,8 @@ def reqister():
 
 
 @app.route("/login", methods=['GET', 'POST'])
+@login_required
 def login():
-    if current_user.is_authenticated:
-        return redirect("/")
     form = LoginForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
@@ -96,6 +95,7 @@ def login():
 
 
 @app.route("/account/<int:user_id>", methods=['GET', 'POST'])
+@login_required
 def account(user_id):
     if current_user.id == user_id:
         db_sess = db_session.create_session()
@@ -145,19 +145,17 @@ def account(user_id):
 
 
 @app.route("/code")
+@login_required
 def code():
-    if current_user.is_authenticated:
-        return render_template('code.html')
-    return redirect("/register")
+    return render_template('code.html')
 
 
 @app.route("/contests")
+@login_required
 def contests():
-    if current_user.is_authenticated:
-        db_sess = db_session.create_session()
-        contests_list = db_sess.query(Contest).all()
-        return render_template('contests.html', contests=contests_list)
-    return redirect("/register")
+    db_sess = db_session.create_session()
+    contests_list = db_sess.query(Contest).all()
+    return render_template('contests.html', contests=contests_list)
 
 
 @app.route("/help")
@@ -169,12 +167,29 @@ def help():
 
 
 @app.route("/contests/<int:contest_id>")
+@login_required
 def contest_code(contest_id):
-    if current_user.is_authenticated:
-        db_sess = db_session.create_session()
-        contest1 = db_sess.query(Contest).filter(Contest.id == contest_id).first()
-        return render_template('contest_code.html', contest=contest1)
-    return redirect("/register")
+    db_sess = db_session.create_session()
+    contest = db_sess.query(Contest).filter(Contest.id == contest_id).first()
+    return render_template('contest_code.html', contest=contest)
+
+
+@app.route("/contests/add", methods=["GET", "POST"])
+@login_required
+def contests_add():
+    if current_user.job_title == "teacher":
+        form = AddContestForm()
+        if form.validate_on_submit():
+            db_sess = db_session.create_session()
+            contest = Contest(
+                title=form.contest_title.data,
+                description=form.contest_description.data
+            )
+            db_sess.add(contest)
+            db_sess.commit()
+            return render_template("contests_add.html", form=form)
+        return render_template("contests_add.html", form=form)
+    return redirect("/main")
 
 
 @app.route("/results")
