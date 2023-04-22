@@ -6,7 +6,7 @@
         <div class="card-header text-white">{{ task.title }}</div>
         <div class="card-body text-white">
             <p class="card-text">{{ task.description }}</p>
-            <a href="{{ url_for('contests_code', contest_id=contest.id, task_id=task.id) }}" class="btn btn-primary">Решать</a>
+            <a href="{{ url_for('contest_code', contest_id=contest.id, task_id=task.id) }}" class="btn btn-primary">Решать</a>
         </div>
     </div>
     {% endfor %}

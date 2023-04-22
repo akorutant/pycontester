@@ -170,25 +170,18 @@ def help():
 def contests_list(contest_id):
     db_sess = db_session.create_session()
     contest = db_sess.query(Contest).filter(Contest.id == contest_id).first()
-    return render_template('contests.html', contest=contest)
-
-
-@app.route("/contests/<int:contest_id>/tasks")
-@login_required
-def contest_tasks(contest_id):
-    db_sess = db_session.create_session()
-    contest = db_sess.query(Contest).filter(Contest.id == contest_id).first()
     tasks_data = db_sess.query(Task).filter(Task.contest_id == contest_id).all()
     return render_template('contests_list_of_tasks.html', contest=contest, tasks=tasks_data)
 
 
-@app.route("/contests/<int:contest_id>/tasks/<int:task_id>")
+@app.route("/contests/<int:contest_id>/<int:task_id>")
 @login_required
 def contest_code(contest_id, task_id):
     db_sess = db_session.create_session()
     contest = db_sess.query(Contest).filter(Contest.id == contest_id).first()
-    tasks_data = db_sess.query(Task).filter(Task.contest_id == contest_id).all()
-    return render_template('contests_list_of_tasks.html', contest=contest, tasks=tasks_data)
+    task = db_sess.query(Task).filter(Task.id == task_id).first()
+    task_data = db_sess.query(Task).filter(Task.contest_id == contest_id).all()
+    return render_template('contest_code.html', contest=contest, start_task=task, tasks=task_data)
 
 
 @app.route("/contests/teacher_list")
