@@ -8,7 +8,7 @@
         <div class="card-header text-white">{{ contest.title }}</div>
         <div class="card-body text-white">
             <p class="card-text">{{ contest.description }}</p>
-            <a href="/contests/{{ contest.id }}" class="btn btn-primary">Участвовать</a>
+            <a href="{{ url_for('contest_code', contest_id=contest.id) }}" class="btn btn-primary">Участвовать</a>
         </div>
     </div>
     {% endfor %}

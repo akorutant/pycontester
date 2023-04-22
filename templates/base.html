@@ -42,7 +42,7 @@
 <header class="container-fluid navbar-background">
     <nav class="navbar navbar-expand-lg navbar-background">
         <div class="container-fluid">
-            <a class="navbar-brand text-white" href="../../main">IT-КУБ Сыктывкар</a>
+            <a class="navbar-brand text-white" href="{{ url_for('index') }}">IT-КУБ Сыктывкар</a>
             <button
                     class="navbar-toggler"
                     type="button"
@@ -63,27 +63,27 @@
                         <a
                                 class="nav-link active text-white"
                                 aria-current="page"
-                                href="../../main"
+                                href="{{ url_for('index') }}"
                         >Главная</a
                         >
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="../../contests">Соревнования</a>
+                        <a class="nav-link text-white" href="{{ url_for('contests') }}">Соревнования</a>
                     </li>
                     {% if current_user.job_title == "teacher" %}
                     <li>
-                        <a class="nav-link text-white" href="../../contests/teacher_list">Мои конкурсы</a>
+                        <a class="nav-link text-white" href="{{ url_for('contests_teacher') }}">Мои конкурсы</a>
                     </li>
                     {% else %}
                     <li>
-                        <a class="nav-link text-white" href="../../code">Редактор кода</a>
+                        <a class="nav-link text-white" href="{{ url_for('code') }}">Редактор кода</a>
                     </li>
                     {% endif %}
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="../../results">Результаты</a>
+                        <a class="nav-link text-white" href="{{ url_for('results') }}">Результаты</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="../../help">Поддержка</a>
+                        <a class="nav-link text-white" href="{{ url_for('help') }}">Поддержка</a>
                     </li>
                     <li>
                         <a class="nav-link disabled text-white">
@@ -101,16 +101,16 @@
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start">
                             <li><a class="dropdown-item"
-                                   href="../../account/{{ current_user.id }}">Аккаунт</a></li>
+                                   href="{{ url_for('account', user_id=current_user.id) }}">Аккаунт</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="../../logout">Выход</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('logout') }}">Выход</a></li>
                         </ul>
                     </div>
                     {% else %}
-                    <a class="btn btn-primary" href="../../login">Войти</a>
-                    <a class="btn btn-primary" href="../../register">Регистрация</a>
+                    <a class="btn btn-primary" href="{{ url_for('login') }}">Войти</a>
+                    <a class="btn btn-primary" href="{{ url_for('register') }}">Регистрация</a>
                     {% endif %}
                 </div>
             </div>
@@ -149,29 +149,29 @@
                 <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
                     <h6 class="text-uppercase fw-bold mb-4">Ссылки</h6>
                     <p>
-                        <a href="../../main" class="text-reset">Главная</a>
+                        <a href="{{ url_for('index') }}" class="text-reset">Главная</a>
                     </p>
                     <p>
-                        <a href="../../contests" class="text-reset">Соревнования</a>
+                        <a href="{{ url_for('contests') }}" class="text-reset">Соревнования</a>
                     </p>
                     {% if current_user.job_title == "teacher" %}
                     <p>
-                        <a class="nav-link text-white" href="../../contests/teacher_list">Мои конкурсы</a>
+                        <a class="nav-link text-white" href="{{ url_for('contests_teacher') }}">Мои конкурсы</a>
                     </p>
                     {% else %}
                     <p>
-                        <a class="nav-link text-white" href="../../code">Редактор кода</a>
+                        <a class="nav-link text-white" href="{{ url_for('code') }}">Редактор кода</a>
                     </p>
                     {% endif %}
                     <p>
-                        <a href="/results" class="text-reset">Результаты</a>
+                        <a href="{{ url_for('results') }}" class="text-reset">Результаты</a>
                     </p>
                     <p>
-                        <a href="/help" class="text-reset">Поддержка</a>
+                        <a href="{{ url_for('help') }}" class="text-reset">Поддержка</a>
                     </p>
                     <p>
                         {% if current_user.is_authenticated %}
-                        <a class="text-reset text-white" href="../../account/{{ current_user.id }}">Аккаунт</a>
+                        <a class="text-reset text-white" href="{{ url_for('account', user_id=current_user.id) }}">Аккаунт</a>
                         {% endif %}
                     </p>
                 </div>

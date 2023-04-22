@@ -8,16 +8,16 @@
             <div class="card-header text-white">{{ contest.title }}</div>
             <div class="card-body text-white">
                 <p class="card-text">{{ contest.description }}</p>
-                <a class="btn btn-primary" href="../../contests/teacher_list/{{ contest.id }}">Изменить</a>
-                <a class="btn btn-danger" href="../../contest_delete/{{ contest.id }}">Удалить</a>
+                <a class="btn btn-primary" href="{{ url_for('contests_edit', id=contest.id) }}">Изменить</a>
+                <a class="btn btn-danger" href="{{ url_for('contest_delete', id=contest.id) }}">Удалить</a>
             </div>
         </div>
     {% endfor %}
-    <a class="btn btn-primary" href="../../contests/add">Создать</a>
+    <a class="btn btn-primary" href="{{ url_for('contests_add') }}">Создать</a>
 </div>
 
 {% else %}
     <h1 class="text-white">Вы ещё не создали конкурсы</h1>
-    <a class="btn btn-primary" href="../../contests/add">Создать</a>
+    <a class="btn btn-primary" href="{{ url_for('contests_add') }}">Создать</a>
 {% endif %}
 {% endblock %}

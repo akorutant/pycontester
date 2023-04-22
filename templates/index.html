@@ -54,7 +54,7 @@
 </p>
 {% if not current_user.is_authenticated %}
 <div class="row">
-  <a href="/register" class="btn btn-primary p-3" class="justify-content: center">
+  <a href="{{ url_for('register') }}" class="btn btn-primary p-3" class="justify-content: center">
     <b>Попробуйте сами!</b>
   </a>  
 </div>

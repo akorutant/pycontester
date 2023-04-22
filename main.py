@@ -40,7 +40,7 @@ def index():
 
 
 @app.route('/register', methods=['GET', 'POST'])
-def reqister():
+def register():
     form = RegisterForm()
     if current_user.is_authenticated:
         return redirect("/")
