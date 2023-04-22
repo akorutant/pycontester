@@ -6,11 +6,9 @@
         <div class="card-header text-white">{{ task.title }}</div>
         <div class="card-body text-white">
             <p class="card-text">{{ task.description }}</p>
-            <a href="{{ url_for('task_edit', contest_id=contest.id, id=task.id) }}" class="btn btn-primary">Изменить</a>
-            <a href="{{ url_for('task_delete', id=task.id) }}" class="btn btn-danger">Удалить</a>
+            <a href="{{ url_for('contests_code', contest_id=contest.id, task_id=task.id) }}" class="btn btn-primary">Решать</a>
         </div>
     </div>
     {% endfor %}
-    <a class="btn btn-primary" href="{{ url_for('tasks_add', contest_id=contest.id) }}">Создать</a>
 </div>
 {% endblock %}

@@ -3,18 +3,17 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from werkzeug.utils import redirect, secure_filename
 
 from data import db_session
-from data.users import User
-from data.teachers import Teacher
 from data.contests import Contest
 from data.tasks import Task
-from forms.login_form import LoginForm
-from forms.register_form import RegisterForm
-from forms.change_password_form import ChangePasswordForm
-from forms.change_avatar_form import ChangeAvatarForm
-from forms.feedback_form import FeedbackForm
+from data.teachers import Teacher
+from data.users import User
 from forms.add_contest_form import AddContestForm
 from forms.add_tasks_for_contest_form import AddTasksForContestForm
-
+from forms.change_avatar_form import ChangeAvatarForm
+from forms.change_password_form import ChangePasswordForm
+from forms.feedback_form import FeedbackForm
+from forms.login_form import LoginForm
+from forms.register_form import RegisterForm
 from rate_function import APICurrencyRates
 
 app = Flask(__name__)
@@ -168,10 +167,28 @@ def help():
 
 @app.route("/contests/<int:contest_id>")
 @login_required
-def contest_code(contest_id):
+def contests_list(contest_id):
     db_sess = db_session.create_session()
     contest = db_sess.query(Contest).filter(Contest.id == contest_id).first()
-    return render_template('contest_code.html', contest=contest)
+    return render_template('contests.html', contest=contest)
+
+
+@app.route("/contests/<int:contest_id>/tasks")
+@login_required
+def contest_tasks(contest_id):
+    db_sess = db_session.create_session()
+    contest = db_sess.query(Contest).filter(Contest.id == contest_id).first()
+    tasks_data = db_sess.query(Task).filter(Task.contest_id == contest_id).all()
+    return render_template('contests_list_of_tasks.html', contest=contest, tasks=tasks_data)
+
+
+@app.route("/contests/<int:contest_id>/tasks/<int:task_id>")
+@login_required
+def contest_code(contest_id, task_id):
+    db_sess = db_session.create_session()
+    contest = db_sess.query(Contest).filter(Contest.id == contest_id).first()
+    tasks_data = db_sess.query(Task).filter(Task.contest_id == contest_id).all()
+    return render_template('contests_list_of_tasks.html', contest=contest, tasks=tasks_data)
 
 
 @app.route("/contests/teacher_list")
@@ -252,9 +269,10 @@ def contest_delete(id):
 def tasks(contest_id):
     db_sess = db_session.create_session()
     tasks_data = db_sess.query(Task).filter(Task.author_id == current_user.id).all()
+    contest_data = db_sess.query(Contest).filter(Contest.id == contest_id).first()
     if not tasks_data:
         return redirect(url_for("tasks_add", contest_id=contest_id))
-    return render_template("tasks.html", tasks=tasks_data)
+    return render_template("tasks.html", tasks=tasks_data, contest=contest_data)
 
 
 @app.route("/tasks/add/<int:contest_id>", methods=["GET", "POST"])
@@ -268,9 +286,59 @@ def tasks_add(contest_id):
                 title=form.task_title.data,
                 description=form.task_description.data,
                 input=":".join(form.task_input.data.split()),
-                output=":".join(form.task_output.data.split())
+                output=":".join(form.task_output.data.split()),
+                contest_id=contest_id,
+                author_id=current_user.id
             )
+            db_sess.add(task)
+            db_sess.commit()
+            return redirect(url_for("tasks", contest_id=contest_id))
         return render_template("add_task_form.html", form=form)
+
+
+@app.route("/task_delete/<int:id>")
+def task_delete(id):
+    db_sess = db_session.create_session()
+    task_data = db_sess.query(Task).filter(Task.id == id,
+                                           Task.author_id == current_user.id).first()
+    if task_data:
+        db_sess.delete(task_data)
+        db_sess.commit()
+    else:
+        abort(404)
+    return redirect(url_for("contests_teacher"))
+
+
+@app.route("/tasks/<int:contest_id>/<int:id>", methods=['GET', 'POST'])
+@login_required
+def task_edit(contest_id, id):
+    form = AddTasksForContestForm()
+    if request.form == "GET":
+        db_sess = db_session.create_session()
+        task_data = db_sess.query(Task).filter(Task.id == id,
+                                               Task.author_id == current_user.id).first()
+        if task_data:
+            form.task_title.data = task_data.title
+            form.task_description.data = task_data.description
+            form.task_input.data = task_data.input
+            form.task_output.data = task_data.output
+        else:
+            abort(404)
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        task_data = db_sess.query(Task).filter(Contest.id == id,
+                                               Task.author_id == current_user.id).first()
+        if task_data:
+            task_data.title = form.task_title.data
+            task_data.description = form.task_description.data
+            task_data.input = form.task_input.data
+            task_data.output = form.task_output.data
+            db_sess.commit()
+            return redirect(url_for("tasks", contest_id=contest_id))
+        else:
+            abort(404)
+
+    return render_template("add_task_form.html", form=form)
 
 
 @app.route("/results")
@@ -298,4 +366,4 @@ def user_avatar():
 
 if __name__ == '__main__':
     db_session.global_init("db/database.sqlite")
-    app.run(debug=True, port=8080)
+    app.run(debug=True, port=8081)

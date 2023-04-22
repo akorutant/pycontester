@@ -24,9 +24,13 @@
     <div class="row mb-3 text-white">
         <div class="col">
             <h1>Условие:</h1>
-            <p>
-              {{ contest.description}}
-            </p>
+            <p> task.description </p>
+            <div class="btn-toolbar" role="toolbar">
+                <div class="btn-group me-2" role="group">
+                    {% for task in tasks %}
+                    <a href="{{ url_for() }}" class="btn btn-primary">tasks.index(task.id)</a>
+                </div>
+            </div>
         </div>
     </div>
     <div class="row mb-3">
