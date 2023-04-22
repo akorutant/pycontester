@@ -1,0 +1,47 @@
+{% extends "base.html" %} {% block content %}
+<h1 class="text-white">Создать задание</h1>
+<form action="" method="post" class="text-white">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.task_title.label(class="mb-2") }}
+        {{ form.task_title(class="form-control") }}
+        {% for error in form.task_title.errors %}
+    <p class="alert alert-danger" role="alert">
+        {{ error }}
+    </p>
+    {% endfor %}
+    </p>
+
+    <p>
+        {{ form.task_description.label(class="mb-2", type="textarea") }}
+        {{ form.task_description(class="form-control") }}
+        {% for error in form.task_description.errors %}
+    <p class="alert alert-danger" role="alert">
+        {{ error }}
+    </p>
+    {% endfor %}
+    </p>
+
+    <p>
+        {{ form.task_input.label(class="mb-2", type="textarea") }}
+        {{ form.task_input(class="form-control") }}
+        {% for error in form.task_input.errors %}
+    <p class="alert alert-danger" role="alert">
+        {{ error }}
+    </p>
+    {% endfor %}
+    </p>
+
+    <p>
+        {{ form.task_output.label(class="mb-2", type="textarea") }}
+        {{ form.task_output(class="form-control") }}
+        {% for error in form.task_output.errors %}
+    <p class="alert alert-danger" role="alert">
+        {{ error }}
+    </p>
+    {% endfor %}
+    </p>
+
+    <p>{{ form.submit(type="submit", class="btn btn-primary mt-3") }}</p>
+</form>
+{% endblock %}

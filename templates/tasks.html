@@ -1,0 +1,17 @@
+{% extends "base.html" %} {% block content %}
+
+{% if tasks %}
+<div class="container-fluid code-container mt-3 text-white">
+    <h1>Список заданий для конкурса contest.title</h1>
+    {% for task in tasks %}
+    <div class="card card-background mb-3">
+        <div class="card-header text-white">{{ task.title }}</div>
+        <div class="card-body text-white">
+            <p class="card-text">{{ task.description }}</p>
+            <a href="{{ url_for('tasks_edit', task_id=task.id) }}" class="btn btn-primary">Изменить</a>
+            <a href="{{ url_for('tasks_edit', task_id=task.id) }}" class="btn btn-danger">Удалить</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

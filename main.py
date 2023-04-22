@@ -1,4 +1,4 @@
-from flask import Flask, render_template, make_response, request, abort
+from flask import Flask, render_template, make_response, request, abort, url_for
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.utils import redirect, secure_filename
 
@@ -6,12 +6,14 @@ from data import db_session
 from data.users import User
 from data.teachers import Teacher
 from data.contests import Contest
+from data.tasks import Task
 from forms.login_form import LoginForm
 from forms.register_form import RegisterForm
 from forms.change_password_form import ChangePasswordForm
 from forms.change_avatar_form import ChangeAvatarForm
 from forms.feedback_form import FeedbackForm
 from forms.add_contest_form import AddContestForm
+from forms.add_tasks_for_contest_form import AddTasksForContestForm
 
 from rate_function import APICurrencyRates
 
@@ -43,7 +45,7 @@ def index():
 def register():
     form = RegisterForm()
     if current_user.is_authenticated:
-        return redirect("/")
+        return redirect(url_for("index"))
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
             return render_template('register.html', title='Регистрация',
@@ -74,7 +76,7 @@ def register():
             )
             db_sess.add(teacher)
             db_sess.commit()
-        return redirect('/login')
+        return redirect(url_for('login'))
 
     return render_template('register.html', title='Регистрация', form=form)
 
@@ -83,13 +85,13 @@ def register():
 def login():
     form = LoginForm()
     if current_user.is_authenticated:
-        return redirect("/")
+        return redirect(url_for("index"))
     if form.validate_on_submit():
         db_sess = db_session.create_session()
         user = db_sess.query(User).filter(User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
-            return redirect("/")
+            return redirect(url_for("index"))
         return render_template('login.html',
                                message="Неправильный логин или пароль",
                                form=form)
@@ -139,7 +141,7 @@ def account(user_id):
                                form_change_password=form_change_password,
                                form_change_avatar=form_change_avatar)
 
-    return redirect("/register")
+    return redirect(url_for("register"))
 
 
 @app.route("/code")
@@ -179,7 +181,7 @@ def contests_teacher():
         db_sess = db_session.create_session()
         contests_data = db_sess.query(Contest).filter(Contest.author_id == current_user.id).all()
         return render_template("teacher_contests.html", contests=contests_data)
-    return redirect("/main")
+    return redirect(url_for("index"))
 
 
 @app.route("/contests/teacher_list/<int:id>", methods=['GET', 'POST'])
@@ -203,7 +205,7 @@ def contests_edit(id):
             contests_data.title = form.contest_title.data
             contests_data.description = form.contest_description.data
             db_sess.commit()
-            return redirect("/contests/teacher_list")
+            return redirect(url_for("contests_teacher"))
         else:
             abort(404)
 
@@ -225,10 +227,10 @@ def contests_add():
             )
             db_sess.add(contest)
             db_sess.commit()
-            return redirect("../../contests/teacher_list")
+            return redirect(url_for("contests_teacher"))
 
         return render_template("contests_add.html", form=form)
-    return redirect("/main")
+    return redirect(url_for("index"))
 
 
 @app.route("/contest_delete/<int:id>", methods=["GET", "POST"])
@@ -242,7 +244,33 @@ def contest_delete(id):
         db_sess.commit()
     else:
         abort(404)
-    return redirect("/contests/teacher_list")
+    return redirect(url_for("contests_teacher"))
+
+
+@app.route("/tasks/<int:contest_id>")
+@login_required
+def tasks(contest_id):
+    db_sess = db_session.create_session()
+    tasks_data = db_sess.query(Task).filter(Task.author_id == current_user.id).all()
+    if not tasks_data:
+        return redirect(url_for("tasks_add", contest_id=contest_id))
+    return render_template("tasks.html", tasks=tasks_data)
+
+
+@app.route("/tasks/add/<int:contest_id>", methods=["GET", "POST"])
+@login_required
+def tasks_add(contest_id):
+    form = AddTasksForContestForm()
+    if current_user.job_title == "teacher":
+        if form.validate_on_submit():
+            db_sess = db_session.create_session()
+            task = Task(
+                title=form.task_title.data,
+                description=form.task_description.data,
+                input=":".join(form.task_input.data.split()),
+                output=":".join(form.task_output.data.split())
+            )
+        return render_template("add_task_form.html", form=form)
 
 
 @app.route("/results")
@@ -254,7 +282,7 @@ def results():
 @login_required
 def logout():
     logout_user()
-    return redirect("/")
+    return redirect(url_for('index'))
 
 
 @app.route("/user_avatar")
