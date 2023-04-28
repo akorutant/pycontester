@@ -436,7 +436,7 @@ def not_found(error):
 
 @app.errorhandler(405)
 def not_allowed(error):
-    return render_template('405error.html.html',
+    return render_template('405error.html',
                            title="Ошибка 405",
                            rate=rate), 405
 
