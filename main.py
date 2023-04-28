@@ -1,8 +1,8 @@
 import os
 
-from flask import Flask, render_template, make_response, request, abort, url_for, jsonify
+from flask import Flask, render_template, make_response, request, abort, url_for
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from werkzeug.utils import redirect, secure_filename
+from werkzeug.utils import redirect
 
 from data import db_session
 from data.contests import Contest
@@ -24,6 +24,14 @@ app.config["SECRET_KEY"] = "fjkFOEKFMOKMFIO3FMKLMkelfmOIJR3FMFKNFOU2IN3PIFNOI232
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+if not os.path.isdir('database'):
+    os.mkdir('database')
+
+if not os.path.isfile('database/db.sqlite'):
+    with open('database/db.sqlite', 'w') as f:
+        pass
+
 db_session.global_init("database/db.sqlite")
 rate = currency_rates.get_current_rate()
 
@@ -99,6 +107,7 @@ def login():
             return redirect(url_for("index"))
         return render_template('login.html',
                                message="Неправильный логин или пароль",
+                               title='Авторизация',
                                form=form,
                                rate=rate)
     return render_template('login.html',
@@ -274,6 +283,7 @@ def contests_add():
             db_sess.commit()
             return redirect(url_for("contests_teacher"))
         return render_template("contests_add.html",
+                               title="Добавление конкурcов",
                                form=form,
                                rate=rate)
     return redirect(url_for("index"))
@@ -300,8 +310,13 @@ def tasks(contest_id):
     tasks_data = db_sess.query(Task).filter(Task.author_id == current_user.id).all()
     contest_data = db_sess.query(Contest).filter(Contest.id == contest_id).first()
     if not tasks_data:
-        return redirect(url_for("tasks_add", contest_id=contest_id))
-    return render_template("tasks.html", tasks=tasks_data, contest=contest_data, rate=rate)
+        return redirect(url_for("tasks_add",
+                                contest_id=contest_id))
+    return render_template("tasks.html",
+                           title="Список конкурсов",
+                           tasks=tasks_data,
+                           contest=contest_data,
+                           rate=rate)
 
 
 @app.route("/tasks/add/<int:contest_id>", methods=["GET", "POST"])
@@ -324,6 +339,7 @@ def tasks_add(contest_id):
             return redirect(url_for("tasks",
                                     contest_id=contest_id))
         return render_template("add_task_form.html",
+                               title="Добавление задачи",
                                form=form,
                                rate=rate)
 
@@ -372,6 +388,7 @@ def task_edit(contest_id, id):
             abort(404)
 
     return render_template("add_task_form.html",
+                           title="Редактор задачи",
                            form=form,
                            rate=rate)
 
@@ -394,8 +411,10 @@ def logout():
 @login_required
 def user_avatar():
     img = current_user.avatar
+    print(img)
     if not img:
-        return ""
+        with open('static/img/avatar.jpeg', 'rb') as image:
+            img = image.read()
     h = make_response(img)
     h.headers['Content-Type'] = 'image/png'
     return h
@@ -404,40 +423,46 @@ def user_avatar():
 @app.errorhandler(503)
 def not_found(error):
     return render_template('503error.html',
+                           title="Ошибка 503",
                            rate=rate), 503
 
 
 @app.errorhandler(500)
 def not_found(error):
     return render_template('500error.html',
+                           title="Ошибка 500",
                            rate=rate), 500
 
 
 @app.errorhandler(405)
 def not_allowed(error):
     return render_template('405error.html.html',
+                           title="Ошибка 405",
                            rate=rate), 405
 
 
 @app.errorhandler(404)
 def not_found(error):
     return render_template('404error.html',
+                           title="Ошибка 404",
                            rate=rate), 404
 
 
 @app.errorhandler(403)
 def not_found(error):
     return render_template('403error.html',
+                           title="Ошибка 403",
                            rate=rate), 403
 
 
 @app.errorhandler(401)
 def unauthorized(error):
     return render_template('401error.html',
+                           title="Ошибка 401",
                            rate=rate), 401
 
 
 if __name__ == '__main__':
     db_session.global_init("db/database.sqlite")
     port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=port, debug=True)
