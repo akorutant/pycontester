@@ -25,8 +25,7 @@ app.config["SECRET_KEY"] = "fjkFOEKFMOKMFIO3FMKLMkelfmOIJR3FMFKNFOU2IN3PIFNOI232
 login_manager = LoginManager()
 login_manager.init_app(app)
 db_session.global_init("database/db.sqlite")
-# rate = currency_rates.get_current_rate()
-rate = "81"
+rate = currency_rates.get_current_rate()
 
 
 @login_manager.user_loader
@@ -50,12 +49,14 @@ def register():
         return redirect(url_for("index"))
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
-            return render_template('register.html', title='Регистрация',
+            return render_template('register.html',
+                                   title='Регистрация',
                                    form=form,
                                    message="Пароли не совпадают")
         db_sess = db_session.create_session()
         if db_sess.query(User).filter(User.email == form.email.data).first():
-            return render_template('register.html', title='Регистрация',
+            return render_template('register.html',
+                                   title='Регистрация',
                                    form=form,
                                    message="Такой пользователь уже есть")
         user = User(
@@ -117,7 +118,6 @@ def account(user_id):
         if form_change_avatar.validate_on_submit():
             message_for_avatar_form = "Вы не прикрепили файл"
             user_photo = request.files['avatar']
-            print(user_photo)
             if user_photo:
                 user.avatar = user_photo.read()
                 db_sess.commit()
@@ -157,6 +157,7 @@ def account(user_id):
 @login_required
 def code():
     return render_template('code.html',
+                           title="Редактор кода",
                            rate=rate)
 
 
@@ -166,6 +167,7 @@ def contests():
     db_sess = db_session.create_session()
     contests_list = db_sess.query(Contest).all()
     return render_template('contests.html',
+                           title="Список конкурсов",
                            contests=contests_list,
                            rate=rate)
 
@@ -175,9 +177,11 @@ def help():
     form = FeedbackForm()
     if form.validate_on_submit():
         return render_template('feedback.html',
+                               title="Обратная связь",
                                form=form,
                                rate=rate)
     return render_template('feedback.html',
+                           title="Обратная связь",
                            form=form,
                            rate=rate)
 
@@ -189,6 +193,7 @@ def contests_list(contest_id):
     contest = db_sess.query(Contest).filter(Contest.id == contest_id).first()
     tasks_data = db_sess.query(Task).filter(Task.contest_id == contest_id).all()
     return render_template('contests_list_of_tasks.html',
+                           title="Список конкурсов",
                            contest=contest,
                            tasks=tasks_data,
                            rate=rate)
@@ -202,6 +207,7 @@ def contest_code(contest_id, task_id):
     task = db_sess.query(Task).filter(Task.id == task_id).first()
     task_data = db_sess.query(Task).filter(Task.contest_id == contest_id).all()
     return render_template('contest_code.html',
+                           title="Редактор кода",
                            contest=contest,
                            start_task=task,
                            tasks=task_data,
@@ -215,6 +221,7 @@ def contests_teacher():
         db_sess = db_session.create_session()
         contests_data = db_sess.query(Contest).filter(Contest.author_id == current_user.id).all()
         return render_template("teacher_contests.html",
+                               title="Список конкурсов",
                                contests=contests_data,
                                rate=rate)
     return redirect(url_for("index"))
@@ -245,6 +252,7 @@ def contests_edit(id):
         else:
             abort(404)
     return render_template("contests_add.html",
+                           title="Редакторование конкурcов",
                            form=form,
                            rate=rate)
 
