@@ -23,19 +23,30 @@
 <div class="container-fluid code-container mt-3">
     <div class="row mb-3 text-white">
         <div class="col">
-            <h1>Условие:</h1>
-            <p> {{ start_task.description }} </p>
-            <p>Входные данные:<br>
-                {{ "\n".join(start_task.input.split(":")) }}
-            </p>
-            <p>
-                Выходные данные:<br>
+            <h1>Задание № {{ task_id }}</h1>
+            <div class="card card-background mb-3">
+                <div class="card-header text-white">Условие:</div>
+                <div class="card-body text-white">
+                    <p class="card-text">{{ start_task.description }} </p>
+                </div>
+            </div>
+            <div class="card card-background mb-3" style="width: 12rem;">
+                <div class="card-header text-white">Входные данные:</div>
+                <div class="card-body text-white">
+                    {{ "\n".join(start_task.input.split(":")) }}
+                </div>
+            </div>
+            <div class="card card-background mb-3" style="width: 12rem;">
+                <div class="card-header text-white">Выходные данные</div>
+                <div class="card-body text-white">
                 {{ "\n".join(start_task.output.split(":")) }}
-            </p>
+                </div>
+            </div>
             <div class="btn-toolbar" role="toolbar">
                 <div class="btn-group me-2" role="group">
                     {% for task in tasks %}
-                    <a href="{{ url_for('contest_code', contest_id=contest.id, task_id=task.id)}}" class="btn btn-primary">{{ tasks.index(task) + 1}}</a>
+                    <a href="{{ url_for('contest_code', contest_id=contest.id, task_id=task.id)}}"
+                       class="btn btn-primary">{{ tasks.index(task) + 1}}</a>
                     {% endfor %}
                 </div>
             </div>
@@ -61,7 +72,7 @@
             </button>
         </div>
     </div>
-    <div class="codespace row">
+    <div class="row codespace">
         <div class="col-md-6">
             <textarea id="code" name="code"></textarea>
         </div>

@@ -220,7 +220,8 @@ def contest_code(contest_id, task_id):
                            contest=contest,
                            start_task=task,
                            tasks=task_data,
-                           rate=rate)
+                           rate=rate,
+                           task_id=task_id)
 
 
 @app.route("/contests/teacher_list")
@@ -240,7 +241,7 @@ def contests_teacher():
 @login_required
 def contests_edit(id):
     form = AddContestForm()
-    if request.form == "GET":
+    if request.method == "GET":
         db_sess = db_session.create_session()
         contests_data = db_sess.query(Contest).filter(Contest.id == id,
                                                       Contest.author_id == current_user.id).first()
@@ -361,7 +362,7 @@ def task_delete(id):
 @login_required
 def task_edit(contest_id, id):
     form = AddTasksForContestForm()
-    if request.form == "GET":
+    if request.method == "GET":
         db_sess = db_session.create_session()
         task_data = db_sess.query(Task).filter(Task.id == id,
                                                Task.author_id == current_user.id).first()
@@ -370,6 +371,7 @@ def task_edit(contest_id, id):
             form.task_description.data = task_data.description
             form.task_input.data = task_data.input
             form.task_output.data = task_data.output
+            form.submit.data = "Обновить"
         else:
             abort(404)
     if form.validate_on_submit():
@@ -411,7 +413,6 @@ def logout():
 @login_required
 def user_avatar():
     img = current_user.avatar
-    print(img)
     if not img:
         with open('static/img/avatar.jpeg', 'rb') as image:
             img = image.read()
@@ -463,6 +464,4 @@ def unauthorized(error):
 
 
 if __name__ == '__main__':
-    db_session.global_init("db/database.sqlite")
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(debug=True)
