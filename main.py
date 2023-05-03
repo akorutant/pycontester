@@ -248,6 +248,7 @@ def contests_edit(id):
         if contests_data:
             form.contest_title.data = contests_data.title
             form.contest_description.data = contests_data.description
+            form.submit.data = "Обновить"
         else:
             abort(404)
     if form.validate_on_submit():
