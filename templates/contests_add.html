@@ -1,26 +1,36 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %}
+{% block content %}
 <h1 class="text-white">Создание конкурса</h1>
 <form action="" method="post">
     {{ form.hidden_tag() }}
-    <p>
+    <div>
         {{ form.contest_title.label(class="text-white") }}<br>
         {{ form.contest_title(class="form-control") }}<br>
         {% for error in form.contest_title.errors %}
-    <div class="alert alert-danger" role="alert">
-        {{ error }}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
-    </p>
     <p>
         {{ form.contest_description.label(class="text-white") }}<br>
         {{ form.contest_description(class="form-control", type="textarea") }}<br>
-        {{ form.join_deadline(class="form-control", placeholder="Дедлайн начала контеста") }}<br>
         {% for error in form.contest_description.errors %}
     <div class="alert alert-danger" role="alert">
         {{ error }}
     </div>
     {% endfor %}
+    </p>    <p>
+    {{ form.join_deadline.label(class="text-white") }}<br>
 
-    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+    {{ form.join_deadline(class="form-control", placeholder="Дедлайн начала контеста", default=current_datetime) }}<br>
+    {% for error in form.join_deadline.errors %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+    {% endfor %}
+    </p>
+
+    {{ form.submit(class="btn btn-primary") }}
 </form>
 {% endblock %}

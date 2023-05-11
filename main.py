@@ -1,4 +1,5 @@
 import os
+import datetime as dt
 
 from flask import Flask, render_template, make_response, request, abort, url_for
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
@@ -16,10 +17,8 @@ from forms.change_password_form import ChangePasswordForm
 from forms.feedback_form import FeedbackForm
 from forms.login_form import LoginForm
 from forms.register_form import RegisterForm
-from rate_function import APICurrencyRates
 
 app = Flask(__name__)
-currency_rates = APICurrencyRates("M3ZLsRpZnrb80mAb6ZobImQWTo8oe2qg", "RUB", "USD", 1)
 app.config["SECRET_KEY"] = "fjkFOEKFMOKMFIO3FMKLMkelfmOIJR3FMFKNFOU2IN3PIFNOI232F"
 
 login_manager = LoginManager()
@@ -33,7 +32,6 @@ if not os.path.isfile('database/db.sqlite'):
         pass
 
 db_session.global_init("database/db.sqlite")
-rate = currency_rates.get_current_rate()
 
 
 @login_manager.user_loader
@@ -46,8 +44,7 @@ def load_user(user_id):
 @app.route('/main')
 def index():
     return render_template('index.html',
-                           title="Главная",
-                           rate=rate)
+                           title="Главная")
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -90,8 +87,7 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html',
                            title='Регистрация',
-                           form=form,
-                           rate=rate)
+                           form=form)
 
 
 @app.route("/login", methods=['GET', 'POST'])
@@ -108,12 +104,10 @@ def login():
         return render_template('login.html',
                                message="Неправильный логин или пароль",
                                title='Авторизация',
-                               form=form,
-                               rate=rate)
+                               form=form)
     return render_template('login.html',
                            title='Авторизация',
-                           form=form,
-                           rate=rate)
+                           form=form)
 
 
 @app.route("/account/<int:user_id>", methods=['GET', 'POST'])
@@ -135,8 +129,7 @@ def account(user_id):
                                    title="Аккаунт",
                                    message_for_avatar_form=message_for_avatar_form,
                                    form_change_password=form_change_password,
-                                   form_change_avatar=form_change_avatar,
-                                   rate=rate)
+                                   form_change_avatar=form_change_avatar)
 
         elif form_change_password.validate_on_submit():
             message_for_password_form = "Неправильный пароль"
@@ -151,13 +144,11 @@ def account(user_id):
                                    title="Аккаунт",
                                    message_for_password_form=message_for_password_form,
                                    form_change_password=form_change_password,
-                                   form_change_avatar=form_change_avatar,
-                                   rate=rate)
+                                   form_change_avatar=form_change_avatar)
         return render_template('personal_area.html',
                                title="Аккаунт",
                                form_change_password=form_change_password,
-                               form_change_avatar=form_change_avatar,
-                               rate=rate)
+                               form_change_avatar=form_change_avatar)
 
     return redirect(url_for("register"))
 
@@ -166,8 +157,7 @@ def account(user_id):
 @login_required
 def code():
     return render_template('code.html',
-                           title="Редактор кода",
-                           rate=rate)
+                           title="Редактор кода")
 
 
 @app.route("/contests")
@@ -177,8 +167,7 @@ def contests():
     contests_list = db_sess.query(Contest).all()
     return render_template('contests.html',
                            title="Список конкурсов",
-                           contests=contests_list,
-                           rate=rate)
+                           contests=contests_list)
 
 
 @app.route("/help")
@@ -187,12 +176,10 @@ def help():
     if form.validate_on_submit():
         return render_template('feedback.html',
                                title="Обратная связь",
-                               form=form,
-                               rate=rate)
+                               form=form)
     return render_template('feedback.html',
                            title="Обратная связь",
-                           form=form,
-                           rate=rate)
+                           form=form)
 
 
 @app.route("/contests/<int:contest_id>")
@@ -204,8 +191,7 @@ def contests_list(contest_id):
     return render_template('contests_list_of_tasks.html',
                            title="Список конкурсов",
                            contest=contest,
-                           tasks=tasks_data,
-                           rate=rate)
+                           tasks=tasks_data)
 
 
 @app.route("/contests/<int:contest_id>/<int:task_id>")
@@ -220,7 +206,6 @@ def contest_code(contest_id, task_id):
                            contest=contest,
                            start_task=task,
                            tasks=task_data,
-                           rate=rate,
                            task_id=task_id)
 
 
@@ -232,8 +217,7 @@ def contests_teacher():
         contests_data = db_sess.query(Contest).filter(Contest.author_id == current_user.id).all()
         return render_template("teacher_contests.html",
                                title="Список конкурсов",
-                               contests=contests_data,
-                               rate=rate)
+                               contests=contests_data)
     return redirect(url_for("index"))
 
 
@@ -265,21 +249,24 @@ def contests_edit(id):
     return render_template("contests_add.html",
                            title="Редакторование конкурcов",
                            form=form,
-                           rate=rate)
+                           current_datetime=dt.datetime.now())
 
 
 @app.route("/contests/add", methods=["GET", "POST"])
 @login_required
 def contests_add():
     if current_user.job_title == "teacher":
-        db_sess = db_session.create_session()
         form = AddContestForm()
+        print("AAAAAAAAAAAAA")
         if form.validate_on_submit():
+            print(111111)
             db_sess = db_session.create_session()
+            deadline = dt.datetime.strptime(form.join_deadline.data, '%Y-%m-%dT%H:%M')
             contest = Contest(
                 title=form.contest_title.data,
                 description=form.contest_description.data,
-                author_id=current_user.id
+                author_id=current_user.id,
+                deadline=deadline
             )
             db_sess.add(contest)
             db_sess.commit()
@@ -287,7 +274,7 @@ def contests_add():
         return render_template("contests_add.html",
                                title="Добавление конкурcов",
                                form=form,
-                               rate=rate)
+                               current_datetime=dt.datetime.now())
     return redirect(url_for("index"))
 
 
@@ -317,8 +304,7 @@ def tasks(contest_id):
     return render_template("tasks.html",
                            title="Список конкурсов",
                            tasks=tasks_data,
-                           contest=contest_data,
-                           rate=rate)
+                           contest=contest_data)
 
 
 @app.route("/tasks/add/<int:contest_id>", methods=["GET", "POST"])
@@ -342,8 +328,7 @@ def tasks_add(contest_id):
                                     contest_id=contest_id))
         return render_template("add_task_form.html",
                                title="Добавление задачи",
-                               form=form,
-                               rate=rate)
+                               form=form)
 
 
 @app.route("/task_delete/<int:id>")
@@ -392,15 +377,13 @@ def task_edit(contest_id, id):
 
     return render_template("add_task_form.html",
                            title="Редактор задачи",
-                           form=form,
-                           rate=rate)
+                           form=form)
 
 
 @app.route("/results")
 def results():
     return render_template("results.html",
-                           title="Результаты",
-                           rate=rate)
+                           title="Результаты")
 
 
 @app.route('/logout')
@@ -425,43 +408,37 @@ def user_avatar():
 @app.errorhandler(503)
 def not_found(error):
     return render_template('503error.html',
-                           title="Ошибка 503",
-                           rate=rate), 503
+                           title="Ошибка 503"), 503
 
 
 @app.errorhandler(500)
 def not_found(error):
     return render_template('500error.html',
-                           title="Ошибка 500",
-                           rate=rate), 500
+                           title="Ошибка 500"), 500
 
 
 @app.errorhandler(405)
 def not_allowed(error):
     return render_template('405error.html',
-                           title="Ошибка 405",
-                           rate=rate), 405
+                           title="Ошибка 405"), 405
 
 
 @app.errorhandler(404)
 def not_found(error):
     return render_template('404error.html',
-                           title="Ошибка 404",
-                           rate=rate), 404
+                           title="Ошибка 404"), 404
 
 
 @app.errorhandler(403)
 def not_found(error):
     return render_template('403error.html',
-                           title="Ошибка 403",
-                           rate=rate), 403
+                           title="Ошибка 403"), 403
 
 
 @app.errorhandler(401)
 def unauthorized(error):
     return render_template('401error.html',
-                           title="Ошибка 401",
-                           rate=rate), 401
+                           title="Ошибка 401"), 401
 
 
 if __name__ == '__main__':

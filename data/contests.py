@@ -16,4 +16,3 @@ class Contest(SqlAlchemyBase):
                                   sqlalchemy.ForeignKey("teachers.user_id"))
     deadline = sqlalchemy.Column(sqlalchemy.DateTime, nullable=False)
     teacher = orm.relationship('Teacher')
-
