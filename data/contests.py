@@ -1,3 +1,4 @@
+import datetime as dt
 import sqlalchemy
 from sqlalchemy.util.preloaded import orm
 
@@ -13,4 +14,6 @@ class Contest(SqlAlchemyBase):
     description = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     author_id = sqlalchemy.Column(sqlalchemy.Integer,
                                   sqlalchemy.ForeignKey("teachers.user_id"))
+    deadline = sqlalchemy.Column(sqlalchemy.DateTime, nullable=False)
     teacher = orm.relationship('Teacher')
+

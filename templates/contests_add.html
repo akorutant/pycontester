@@ -14,6 +14,7 @@
     <p>
         {{ form.contest_description.label(class="text-white") }}<br>
         {{ form.contest_description(class="form-control", type="textarea") }}<br>
+        {{ form.join_deadline(class="form-control", placeholder="Дедлайн начала контеста") }}<br>
         {% for error in form.contest_description.errors %}
     <div class="alert alert-danger" role="alert">
         {{ error }}

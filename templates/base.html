@@ -27,7 +27,7 @@
     {% block import %} {% endblock %}
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
-    <title>{{title}}</title>
+    <title>{{ title }}</title>
 </head>
 <body class="navbar-background">
 <header class="container-fluid navbar-background">
@@ -49,6 +49,7 @@
                     class="collapse navbar-collapse justify-content-between"
                     id="navbarSupportedContent"
             >
+                {% if current_user.is_authenticated %}
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
                         <a
@@ -82,6 +83,16 @@
                         </a>
                     </li>
                 </ul>
+                {% else %}
+                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                     <li class="nav-item">
+                         <a class="nav-link text-white" href="{{ url_for('contests') }}">Соревнования</a>
+                     </li>
+                     <li class="nav-item">
+                         <a class="nav-link text-white" href="{{ url_for('help') }}">Поддержка</a>
+                     </li>
+                 </ul>
+                {% endif %}
                 <div>
                     {% if current_user.is_authenticated %}
                     <div class="btn-group dropdown-center">
