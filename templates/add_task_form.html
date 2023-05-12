@@ -1,6 +1,6 @@
 {% extends "base.html" %} {% block content %}
 <h1 class="text-white">Создать задание</h1>
-<form action="" method="post" class="text-white">
+<form action="" method="post" class="text-white" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
     <p>
         {{ form.task_title.label(class="mb-2") }}
@@ -23,7 +23,7 @@
     </p>
 
     <p>
-        {{ form.task_input.label(class="mb-2", type="textarea") }}
+        {{ form.task_input.label(class="mb-2") }}
         {{ form.task_input(class="form-control") }}
         {% for error in form.task_input.errors %}
     <p class="alert alert-danger" role="alert">
@@ -33,7 +33,7 @@
     </p>
 
     <p>
-        {{ form.task_output.label(class="mb-2", type="textarea") }}
+        {{ form.task_output.label(class="mb-2") }}
         {{ form.task_output(class="form-control") }}
         {% for error in form.task_output.errors %}
     <p class="alert alert-danger" role="alert">

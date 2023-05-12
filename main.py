@@ -1,5 +1,6 @@
 import os
 import datetime as dt
+from io import BytesIO
 
 from flask import Flask, render_template, make_response, request, abort, url_for
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
@@ -17,6 +18,7 @@ from forms.change_password_form import ChangePasswordForm
 from forms.feedback_form import FeedbackForm
 from forms.login_form import LoginForm
 from forms.register_form import RegisterForm
+
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "fjkFOEKFMOKMFIO3FMKLMkelfmOIJR3FMFKNFOU2IN3PIFNOI232F"
@@ -257,16 +259,14 @@ def contests_edit(id):
 def contests_add():
     if current_user.job_title == "teacher":
         form = AddContestForm()
-        print("AAAAAAAAAAAAA")
         if form.validate_on_submit():
-            print(111111)
             db_sess = db_session.create_session()
-            deadline = dt.datetime.strptime(form.join_deadline.data, '%Y-%m-%dT%H:%M')
+            # deadline = dt.datetime.strptime(form.join_deadline.data, '%Y-%m-%dT%H:%M')
             contest = Contest(
                 title=form.contest_title.data,
                 description=form.contest_description.data,
                 author_id=current_user.id,
-                deadline=deadline
+                deadline=form.join_deadline.data
             )
             db_sess.add(contest)
             db_sess.commit()
@@ -314,11 +314,16 @@ def tasks_add(contest_id):
     if current_user.job_title == "teacher":
         if form.validate_on_submit():
             db_sess = db_session.create_session()
+            input_file = form.task_input.data
+            output_file = form.task_output.data
+            input_file = str(input_file.read())[2:-1].replace(r"\r\n", "!!!")
+            output_file = str(output_file.read())[2:-1].replace(r"\r\n", "!!!")
+
             task = Task(
                 title=form.task_title.data,
                 description=form.task_description.data,
-                input=":".join(form.task_input.data.split()),
-                output=":".join(form.task_output.data.split()),
+                input=input_file,
+                output=output_file,
                 contest_id=contest_id,
                 author_id=current_user.id
             )

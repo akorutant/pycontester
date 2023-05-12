@@ -5,8 +5,6 @@
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.css"
 />
-
-<script src="https://cdn.jsdelivr.net/pyodide/v0.20.0/full/pyodide.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/mode/javascript/javascript.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/addon/edit/matchbrackets.min.js"></script>
@@ -33,13 +31,17 @@
             <div class="card card-background mb-3" style="width: 12rem;">
                 <div class="card-header text-white">Входные данные:</div>
                 <div class="card-body text-white">
-                    {{ "\n".join(start_task.input.split(":")) }}
+                    {%for row in start_task.input.split("!!!")%}
+                    <p>{{ row }}</p>
+                    {%endfor%}
                 </div>
             </div>
             <div class="card card-background mb-3" style="width: 12rem;">
                 <div class="card-header text-white">Выходные данные</div>
                 <div class="card-body text-white">
-                {{ "\n".join(start_task.output.split(":")) }}
+                    {%for row in start_task.output.split("!!!")%}
+                    <p>{{ row }}</p>
+                    {%endfor%}
                 </div>
             </div>
             <div class="btn-toolbar" role="toolbar">
@@ -60,30 +62,13 @@
                     onclick="evaluatePython()"
                     class="btn btn-primary"
             >
-                🚀 Run
-            </button>
-            <button
-                    id="clear"
-                    type="button"
-                    onclick="clearHistory()"
-                    class="btn btn-danger"
-            >
-                🧹 Clear
+                Отправить
             </button>
         </div>
     </div>
     <div class="row codespace">
         <div class="col-md-6">
             <textarea id="code" name="code"></textarea>
-        </div>
-        <div class="col-md-6">
-          <textarea
-                  readonly
-                  style="overflow: auto"
-                  class="CodeMirror cm-s-dracula w-100"
-                  id="output"
-                  name="output"
-          ></textarea>
         </div>
     </div>
 </div>
