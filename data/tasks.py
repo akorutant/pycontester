@@ -13,8 +13,6 @@ class Task(SqlAlchemyBase):
     description = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     input = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     output = sqlalchemy.Column(sqlalchemy.String, nullable=False)
-    contest_id = sqlalchemy.Column(sqlalchemy.Integer,
-                                   sqlalchemy.ForeignKey('contests.id'))
     author_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("teachers.user_id"))
     teacher = orm.relationship("Teacher")
-    contests = orm.relationship('Contest')
+    contests = orm.relationship('Contest', secondary='contest_to_task', backref='task')

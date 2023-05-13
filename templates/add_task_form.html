@@ -1,8 +1,13 @@
 {% extends "base.html" %} {% block content %}
 <h1 class="text-white">Создать задание</h1>
+{% for message in get_flashed_messages() %}
+<div class="alert alert-success" role="alert">
+    {{ message }}
+</div>
+{% endfor %}
 <form action="" method="post" class="text-white" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
-    <p>
+    <div>
         {{ form.task_title.label(class="mb-2") }}
         {{ form.task_title(class="form-control") }}
         {% for error in form.task_title.errors %}
@@ -10,9 +15,9 @@
         {{ error }}
     </p>
     {% endfor %}
-    </p>
+</div>
 
-    <p>
+    <div>
         {{ form.task_description.label(class="mb-2", type="textarea") }}
         {{ form.task_description(class="form-control") }}
         {% for error in form.task_description.errors %}
@@ -20,9 +25,9 @@
         {{ error }}
     </p>
     {% endfor %}
-    </p>
+    </div>
 
-    <p>
+    <div>
         {{ form.task_input.label(class="mb-2") }}
         {{ form.task_input(class="form-control") }}
         {% for error in form.task_input.errors %}
@@ -30,9 +35,9 @@
         {{ error }}
     </p>
     {% endfor %}
-    </p>
+    </div>
 
-    <p>
+    <div>
         {{ form.task_output.label(class="mb-2") }}
         {{ form.task_output(class="form-control") }}
         {% for error in form.task_output.errors %}
@@ -40,7 +45,7 @@
         {{ error }}
     </p>
     {% endfor %}
-    </p>
+    </div>
 
     <p>{{ form.submit(type="submit", class="btn btn-primary mt-3") }}</p>
 </form>

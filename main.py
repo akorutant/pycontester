@@ -2,7 +2,7 @@ import os
 import datetime as dt
 from io import BytesIO
 
-from flask import Flask, render_template, make_response, request, abort, url_for
+from flask import Flask, render_template, make_response, request, abort, url_for, flash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.utils import redirect
 
@@ -18,6 +18,7 @@ from forms.change_password_form import ChangePasswordForm
 from forms.feedback_form import FeedbackForm
 from forms.login_form import LoginForm
 from forms.register_form import RegisterForm
+from forms.add_task_to_contest import AddTasksToContestForm
 
 
 app = Flask(__name__)
@@ -162,6 +163,8 @@ def code():
                            title="Редактор кода")
 
 
+#
+
 @app.route("/contests")
 @login_required
 def contests():
@@ -184,7 +187,7 @@ def help():
                            form=form)
 
 
-@app.route("/contests/<int:contest_id>")
+@app.route("/contests/<int:contest_id>", methods=['GET', 'POST'])
 @login_required
 def contests_list(contest_id):
     db_sess = db_session.create_session()
@@ -193,7 +196,8 @@ def contests_list(contest_id):
     return render_template('contests_list_of_tasks.html',
                            title="Список конкурсов",
                            contest=contest,
-                           tasks=tasks_data)
+                           tasks=tasks_data,
+                           form=form)
 
 
 @app.route("/contests/<int:contest_id>/<int:task_id>")
@@ -292,24 +296,31 @@ def contest_delete(id):
     return redirect(url_for("contests_teacher"))
 
 
-@app.route("/tasks/<int:contest_id>")
+@app.route("/tasks/<int:contest_id>", methods=['GET', 'POST'])
 @login_required
 def tasks(contest_id):
+    form = AddTasksToContestForm()
     db_sess = db_session.create_session()
     tasks_data = db_sess.query(Task).filter(Task.author_id == current_user.id).all()
     contest_data = db_sess.query(Contest).filter(Contest.id == contest_id).first()
+    if form.validate_on_submit():
+        task_id = request.form.get('id')
+        task = db_sess.query(Task).filter(Task.id == task_id).first()
+        contest_data.tasks.append(task)
+        db_sess.commit()
     if not tasks_data:
         return redirect(url_for("tasks_add",
                                 contest_id=contest_id))
     return render_template("tasks.html",
                            title="Список конкурсов",
                            tasks=tasks_data,
-                           contest=contest_data)
+                           contest=contest_data,
+                           form=form)
 
 
-@app.route("/tasks/add/<int:contest_id>", methods=["GET", "POST"])
+@app.route("/tasks/add", methods=["GET", "POST"])
 @login_required
-def tasks_add(contest_id):
+def tasks_add():
     form = AddTasksForContestForm()
     if current_user.job_title == "teacher":
         if form.validate_on_submit():
@@ -324,29 +335,31 @@ def tasks_add(contest_id):
                 description=form.task_description.data,
                 input=input_file,
                 output=output_file,
-                contest_id=contest_id,
                 author_id=current_user.id
             )
             db_sess.add(task)
             db_sess.commit()
-            return redirect(url_for("tasks",
-                                    contest_id=contest_id))
+            flash('Задание создано!')
+            return render_template("add_task_form.html",
+                                   title="Добавление задачи",
+                                   form=form)
         return render_template("add_task_form.html",
                                title="Добавление задачи",
                                form=form)
+    return abort(404)
 
 
-@app.route("/task_delete/<int:id>")
-def task_delete(id):
+@app.route("/task_delete/<int:contest_id>/<int:id>")
+def task_delete(contest_id, id):
     db_sess = db_session.create_session()
-    task_data = db_sess.query(Task).filter(Task.id == id,
-                                           Task.author_id == current_user.id).first()
+    task_data = db_sess.query(Task).filter(Task.id == id).first()
     if task_data:
-        db_sess.delete(task_data)
+        contest = db_sess.query(Contest).filter(Contest.id == contest_id).first()
+        contest.tasks.remove(task_data)
         db_sess.commit()
     else:
         abort(404)
-    return redirect(url_for("contests_teacher"))
+    return redirect(url_for("tasks", contest_id=contest_id))
 
 
 @app.route("/tasks/<int:contest_id>/<int:id>", methods=['GET', 'POST'])

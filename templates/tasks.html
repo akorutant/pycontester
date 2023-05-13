@@ -1,16 +1,51 @@
 {% extends "base.html" %} {% block content %}
 <div class="container mt-3 text-white">
-    <h1>Список заданий для конкурса {{ contest.title }}</h1>
-    {% for task in tasks %}
+    <h1>Список задач для конкурса {{ contest.title }}</h1>
+    {% for task in contest.tasks %}
     <div class="card card-background mb-3">
         <div class="card-header text-white">{{ task.title }}</div>
         <div class="card-body text-white">
             <p class="card-text">{{ task.description }}</p>
             <a href="{{ url_for('task_edit', contest_id=contest.id, id=task.id) }}" class="btn btn-primary">Изменить</a>
-            <a href="{{ url_for('task_delete', id=task.id) }}" class="btn btn-danger">Удалить</a>
+            <a href="{{ url_for('task_delete', id=task.id, contest_id=contest.id) }}" class="btn btn-danger">Удалить</a>
         </div>
     </div>
     {% endfor %}
-    <a class="btn btn-primary" href="{{ url_for('tasks_add', contest_id=contest.id) }}">Создать</a>
+    <button class="btn btn-primary" type="button" data-bs-toggle="modal"
+            data-bs-target="#NotificationModal" style="margin-right: 10px;"> Добавить
+    </button>
+    <div class="modal fade" id="NotificationModal" tabindex="-1" aria-labelledby="NotificationModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="NotificationModalLabel" style="color: black">Задачи</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="inviteModal">
+                    {% for task in tasks %}
+                    {% if task not in contest.tasks %}
+                    <form action="" method="post">
+                    {{ form.hidden_tag() }}
+                    <div class="card" id="inviteToGroup">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ task.title }}</h5>
+                            <p class="card-text">{{ task.description }}</p>
+                            {{ form.id(hidden=True, value=task.id) }}
+                            <div class="input-group">
+                                <button class="btn btn-primary" type="submit">Добавить
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    </form>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

@@ -8,9 +8,14 @@
             <div class="card-header text-white">{{ contest.title }}</div>
             <div class="card-body text-white">
                 <p class="card-text">{{ contest.description }}</p>
+                <a class="btn btn-primary" href="{{ url_for('tasks', contest_id=contest.id) }}">Задания</a>
                 <a class="btn btn-primary" href="{{ url_for('contests_edit', id=contest.id) }}">Изменить</a>
-                <a class="btn btn-danger" href="{{ url_for('contest_delete', id=contest.id) }}">Удалить</a><br>
-                <a class="btn btn-primary mt-1" href="{{ url_for('tasks', contest_id=contest.id) }}">Задания</a>
+                <a class="btn btn-danger" href="{{ url_for('contest_delete', id=contest.id) }}">Удалить</a>
+                <div style="margin-top: 10px;">
+                {% for task in contest.tasks %}
+                    <span class="badge bg-success">{{ task.title }}</span>
+                {% endfor %}
+                </div>
             </div>
         </div>
     {% endfor %}
