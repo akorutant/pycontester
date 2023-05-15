@@ -47,8 +47,7 @@
             <div
                     class="collapse navbar-collapse justify-content-between"
                     id="navbarSupportedContent"
-            >
-                {% if current_user.is_authenticated %}
+            >   
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
                         <a
@@ -58,6 +57,7 @@
                         >Главная</a
                         >
                     </li>
+                    {% if current_user.is_authenticated %}
                     {% if current_user.job_title == "teacher" %}
                     <li>
                         <a class="nav-link text-white" href="{{ url_for('contests_teacher') }}">Мои конкурсы</a>
@@ -67,26 +67,20 @@
                     </li>
                     {% else %}
                     <li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{{ url_for('contests') }}">Конкурсы</a>
+                        </li>
                         <a class="nav-link text-white" href="{{ url_for('code') }}">Редактор кода</a>
                     </li>
                     {% endif %}
                     <li class="nav-item">
                         <a class="nav-link text-white" href="{{ url_for('results') }}">Результаты</a>
                     </li>
+                    {% endif %}
                     <li class="nav-item">
                         <a class="nav-link text-white" href="{{ url_for('help') }}">Поддержка</a>
                     </li>
                 </ul>
-                {% else %}
-                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                     <li class="nav-item">
-                         <a class="nav-link text-white" href="{{ url_for('contests') }}">Соревнования</a>
-                     </li>
-                     <li class="nav-item">
-                         <a class="nav-link text-white" href="{{ url_for('help') }}">Поддержка</a>
-                     </li>
-                 </ul>
-                {% endif %}
                 <div>
                     {% if current_user.is_authenticated %}
                     <div class="btn-group dropdown-center">
@@ -125,50 +119,52 @@
                 <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
                     <h6 class="text-uppercase fw-bold mb-4">
                         <i class="fas fa-gem me-3 text-secondary"></i
-                        >Denisska777AndAkoru337
+                        >IT-КУБ Сыктывкар
                     </h6>
-                    <p>Это сайт Фотиева Дениса и Прудникова Савелия, одних из лучших (если не лучших)
-                        программистов 21-го века города Сыктывкара среди учеников образовательных
-                        учереждений в весе до
-                        198.7 кг, и ростом более 149.6 см. А стали мы такими благодоря Лицею Академии
-                        Яндекса. </p>
+                    <p>Наш сайт был написан четыремя учениками из IT-КУБА для проведения локальных конкурсов по программированию на языке программирования Python.</p>
                 </div>
                 <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
                     <h6 class="text-uppercase fw-bold mb-4">Ссылки на нас</h6>
                     <p>
-                        <a href="https://akoru.works/" class="text-reset">Савелий :D</a>
+                        <a href="https://akoru.works/" class="nav-link text-white">akorutant</a>
                     </p>
                     <p>
-                        <a href="#!" class="text-reset">Диса диса диса</a>
+                        <a href="https://t.me/itsdenisska" class="nav-link text-white">itsdenisska</a>
+                    </p>
+                    <p>
+                        <a href="https://github.com/b1tka" class="nav-link text-white">b1tka</a>
+                    </p>
+                    <p>
+                        <a href="https://github.com/xtern0o" class="nav-link text-white">xtern0o</a>
                     </p>
                 </div>
                 <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
                     <h6 class="text-uppercase fw-bold mb-4">Ссылки</h6>
                     <p>
-                        <a href="{{ url_for('index') }}" class="text-reset">Главная</a>
+                        <a href="{{ url_for('index') }}" class="nav-link text-white">Главная</a>
                     </p>
-                    <p>
-                        <a href="{{ url_for('contests') }}" class="text-reset">Соревнования</a>
-                    </p>
+                    {% if current_user.is_authenticated %}
                     {% if current_user.job_title == "teacher" %}
                     <p>
                         <a class="nav-link text-white" href="{{ url_for('contests_teacher') }}">Мои конкурсы</a>
                     </p>
                     {% else %}
                     <p>
+                        <a href="{{ url_for('contests') }}" class="nav-link text-white">Конкурсы</a>
+                    </p>
+                    <p>
                         <a class="nav-link text-white" href="{{ url_for('code') }}">Редактор кода</a>
                     </p>
                     {% endif %}
                     <p>
-                        <a href="{{ url_for('results') }}" class="text-reset">Результаты</a>
+                        <a href="{{ url_for('results') }}" class="nav-link text-white">Результаты</a>
                     </p>
                     <p>
-                        <a href="{{ url_for('help') }}" class="text-reset">Поддержка</a>
+                        <a class="nav-link text-white" href="{{ url_for('account', user_id=current_user.id) }}">Аккаунт</a>
                     </p>
+                    {% endif %}
                     <p>
-                        {% if current_user.is_authenticated %}
-                        <a class="text-reset text-white" href="{{ url_for('account', user_id=current_user.id) }}">Аккаунт</a>
-                        {% endif %}
+                        <a href="{{ url_for('help') }}" class="nav-link text-white">Поддержка</a>
                     </p>
                 </div>
             </div>
@@ -176,7 +172,7 @@
     </section>
     <div class="text-center p-4 text-white">
         © 2023 Copyright:
-        <a class="text-reset fw-bold" href="#">Denisska777AndAkoru337</a>
+        <a class="text-reset fw-bold" href="{{ url_for('index') }}">IT-КУБ Сыктывкар</a>
     </div>
 </footer>
 
@@ -190,6 +186,6 @@
         integrity="sha384-Y4oOpwW3duJdCWv5ly8SCFYWqFDsfob/3GkgExXKV4idmbt98QcxXYs9UoXAB7BZ"
         crossorigin="anonymous"
 ></script>
-<script src="/static/js/main.js"></script>
+{% block scripts %} {% endblock %}
 </body>
 </html>
