@@ -5,10 +5,6 @@
   background-color: #004e81;
 }
 
-.codespace {
-  height: 65vh;
-}
-
-.CodeMirror {
-  height: 65vh;
-}
+/* .CodeMirror {
+  height: 300px;
+} */

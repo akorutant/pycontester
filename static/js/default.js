@@ -1,7 +1,7 @@
-const output = document.getElementById("output");
+const output = document.querySelector("#output");
 
 const editor = CodeMirror.fromTextArea(
-  document.getElementById("code"), {
+  document.querySelector("#code"), {
     mode: {
       name: "python",
       version: 3,

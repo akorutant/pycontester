@@ -1,70 +1,62 @@
 {% extends "base.html" %}
 
 {% block import %}
-<link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.css"
-/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/mode/javascript/javascript.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/addon/edit/matchbrackets.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/addon/edit/closebrackets.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.3/mode/python/python.min.js"></script>
-<link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.3/theme/dracula.css"
-/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.3/theme/dracula.css" />
 
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid code-container mt-3">
-    <div class="row mb-3 text-white">
-        <div class="col">
-            {% for task in tasks %}
-            <h1> {{ task.title }}</h1>
-            <div class="card card-background mb-3">
-                <div class="card-header text-white">Условие:</div>
-                <div class="card-body text-white">
-                    <p class="card-text">{{ task.description }} </p>
-                </div>
-            </div>
-            <div class="card card-background mb-3" style="width: 12rem;">
-                <div class="card-header text-white">Входные данные:</div>
-                <div class="card-body text-white">
-                    {%for row in task.input.split("!!!")%}
-                    <p>{{ row }}</p>
-                    {%endfor%}
-                </div>
-            </div>
-            <div class="card card-background mb-3" style="width: 12rem;">
-                <div class="card-header text-white">Выходные данные</div>
-                <div class="card-body text-white">
-                    {%for row in task.output.split("!!!")%}
-                    <p>{{ row }}</p>
-                    {%endfor%}
-                </div>
+<div class="container-fluid mt-3  text-white">
+    {% for task in tasks %}
+    <h1>Задание №{{ task.id }}: {{ task.title }}</h1>
+    <div class="row">
+        <!-- <div class="col"> -->
+        <div class="card card-background mb-3">
+            <div class="card-header text-white">Условие:</div>
+            <div class="card-body text-white">
+                <p class="card-text m-0">{{ task.description }} </p>
             </div>
         </div>
     </div>
-    <div class="row mb-3">
-        <div class="col-md-6">
-            <button
-                    id="run"
-                    type="button"
-                    onclick="evaluatePython()"
-                    class="btn btn-primary"
-            >
-                Отправить
-            </button>
+    <div class="row">
+        <div class="card card-background mb-3 col-md-6">
+            <div class="card-header text-white">Входные данные:</div>
+            <div class="card-body text-white">
+                {% for row in task.input.split("!!!") %}
+                <p class="m-0">{{ row }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="card card-background mb-3 col-md-6">
+            <div class="card-header text-white">Выходные данные</div>
+            <div class="card-body text-white">
+                {% for row in task.output.split("!!!") %}
+                <p class="m-0">{{ row }}</p>
+                {% endfor %}
+            </div>
         </div>
     </div>
-    <div class="row codespace">
-        <div class="col-md-6">
-            <textarea id="code" name="code"></textarea>
+    <div class="row mb-3  block-editor">
+        <div class="col-md-8 p-0">
+            <textarea id="code-{{ task.id }}" class="code"></textarea>
         </div>
-        {% endfor %}
+        <div class="card card-background col-md-4">
+            <div class="card-header text-white">Вердикт:</div>
+            <div class="card-body text-white">
+                <p></p>
+                <button id="run-{{ task.id }}" type="button" class="btn btn-primary mt-3">Отправить</button>
+            </div>
+        </div>
     </div>
+    <!-- </div> -->
+
+    {% endfor %}
 </div>
 {% block scripts %}
 <script src="/static/js/main.js"></script>
