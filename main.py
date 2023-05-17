@@ -194,7 +194,7 @@ def contests_list(contest_id):
     contest = db_sess.query(Contest).filter(Contest.id == contest_id).first()
     task_data = contest.tasks
     return render_template('contest_code.html',
-                           title="Редактор кода",
+                           title=contest.title,
                            contest=contest,
                            tasks=task_data
                            )

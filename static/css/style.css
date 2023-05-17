@@ -8,3 +8,16 @@
 /* .CodeMirror {
   height: 300px;
 } */
+.circle {
+  color: black;
+  text-align: center;
+  background: white;
+  border-radius: 50%;
+  height: 20px;
+  width: 20px;
+  margin-right: 5px;
+}
+
+.test-case {
+  display: flex;
+}
