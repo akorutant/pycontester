@@ -14,4 +14,4 @@ class RegisterForm(FlaskForm):
     password = PasswordField('Пароль', validators=[DataRequired(), Length(min=8, max=32, message='Паполь должен быть не меньше 8 символов, не более 32 символов')])
     password_again = PasswordField('Повторите пароль', validators=[DataRequired()])
 
-    submit = SubmitField('Зарегестрироваться')
+    submit = SubmitField('Зарегистрироваться')

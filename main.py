@@ -1,8 +1,8 @@
 import os
 import datetime as dt
-from io import BytesIO
 
 from flask import Flask, render_template, make_response, request, abort, url_for, flash
+from flask_restful import abort, Api
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.utils import redirect
 
@@ -19,6 +19,7 @@ from forms.feedback_form import FeedbackForm
 from forms.login_form import LoginForm
 from forms.register_form import RegisterForm
 from forms.add_task_to_contest import AddTasksToContestForm
+from tasks_api import TaskResource
 
 
 app = Flask(__name__)
@@ -26,6 +27,9 @@ app.config["SECRET_KEY"] = "fjkFOEKFMOKMFIO3FMKLMkelfmOIJR3FMFKNFOU2IN3PIFNOI232
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+api = Api(app)
+api.add_resource(TaskResource, '/api/task/<int:contest_id>')
 
 if not os.path.isdir('database'):
     os.mkdir('database')
@@ -250,7 +254,6 @@ def contests_add():
         form = AddContestForm()
         if form.validate_on_submit():
             db_sess = db_session.create_session()
-            # deadline = dt.datetime.strptime(form.join_deadline.data, '%Y-%m-%dT%H:%M')
             contest = Contest(
                 title=form.contest_title.data,
                 description=form.contest_description.data,
@@ -312,8 +315,8 @@ def tasks_add():
             db_sess = db_session.create_session()
             input_file = form.task_input.data
             output_file = form.task_output.data
-            input_file = str(input_file.read())[2:-1].replace(r"\r\n", "!!!")
-            output_file = str(output_file.read())[2:-1].replace(r"\r\n", "!!!")
+            input_file = str(input_file.read())[2:-1].strip().replace(r"\r\n", "!!!")
+            output_file = str(output_file.read())[2:-1].strip().replace(r"\r\n", "!!!")
 
             task = Task(
                 title=form.task_title.data,
