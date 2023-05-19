@@ -43,8 +43,8 @@
     </div>
     <div class="test-case">
         {% for count in range(1, task.input.split("#") | length + 1) %}
-        <p class="circle mb-1" data-input="{{ ' '.join(task.input.split('#')[count - 1].split('!!!')).strip() }}" 
-        data-output="{{ ' '.join(task.output.split('#')[count - 1].split('!!!')).strip() }}" id="{{ count }}">{{ count }}</p>
+        <p class="circle mb-1" data-input="{{ ' '.join(task.input.split('#')[count - 1].split('!!!')).strip().replace(' ', '\n') }}" 
+        data-output="{{ ' '.join(task.output.split('#')[count - 1].split('!!!')).strip().replace(' ', '\n') }}" id="{{ count }}">{{ count }}</p>
         {% endfor %}
     </div>
     <div class="row mb-3 block-editor">

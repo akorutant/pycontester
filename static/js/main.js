@@ -33,10 +33,21 @@ editors.forEach((elem) => {
       import sys
       sys.stdout = io.StringIO()
     `);
-      pyodide.setStdin({stdin: () => {return '1\n2\n3'}});
-      let result = await pyodide.runPython(editor.getValue());
-      let stdout = await pyodide.runPython("sys.stdout.getvalue()");
-      console.log(stdout);
+      let testCase = document.querySelectorAll(".test-case");
+      testCase.forEach((elem) => {
+        let tests = elem.querySelectorAll("p");
+        tests.forEach(async (elem) => {
+          pyodide.setStdin({stdin: () => {return `${elem.dataset.input}`}});
+          let result = await pyodide.runPython(editor.getValue());
+          let stdout = await pyodide.runPython("sys.stdout.getvalue()");
+          if (stdout === elem.dataset.output) {
+            console.log("OK");
+          } else {
+            console.log("NOT OK")
+            console.log(stdout)
+          }
+        });
+      });
     } catch (err) {
       console.log(err);
     }
