@@ -20,10 +20,12 @@ editors.forEach((task) => {
 		let pyodide = loadPyodide({});
 		return pyodide;
 	}
+	let confirmButton = task.querySelector("button");
 	let pyodideReadyPromise = main();
 	async function evaluatePython() {
 		let pyodide = await pyodideReadyPromise;
 		try {
+			let count = 0
 			let tests = task.querySelectorAll(".test-case>p");
 			tests.forEach((test) => {
 
@@ -39,10 +41,18 @@ editors.forEach((task) => {
 				let out_test = test.dataset.output;
 				let result = pyodide.runPython(editor.getValue());
 				let stdout = pyodide.runPython("sys.stdout.getvalue()");
+				
 				if (stdout.trim() == out_test.trim()) {
-					test.classList.add("circle-green");
+					test.classList.add("bg-success");
+					test.textContent = "V"
+					count+=1
 				} else {
-					test.classList.add("circle-red");
+					test.classList.add("bg-danger");
+					test.textContent = "X"
+				}
+				if (count == tests.length) {
+					confirmButton.disabled = true
+					editor.options.disableInput = true
 				}
 			});
 		} catch (err) {
@@ -50,6 +60,6 @@ editors.forEach((task) => {
 		}
 	}
 
-	let confirmButton = task.querySelector("button");
+	
 	confirmButton.addEventListener("click", evaluatePython);
 });

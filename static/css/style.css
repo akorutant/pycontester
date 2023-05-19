@@ -10,13 +10,14 @@
 } */
 .circle {
   color: black;
+  border:1px solid black;
   text-align: center;
   background: white;
   border-radius: 50%;
-  height: 40px;
-  width: 40px;
+  height: 35px;
+  width: 35px;
+  font-size: 20px;
   vertical-align: middle;
-  text-align: center;
   margin-right: 10px;
 }
 
