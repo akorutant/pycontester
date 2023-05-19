@@ -13,11 +13,20 @@
   text-align: center;
   background: white;
   border-radius: 50%;
-  height: 20px;
-  width: 20px;
-  margin-right: 5px;
+  height: 40px;
+  width: 40px;
+  vertical-align: middle;
+  text-align: center;
+  margin-right: 10px;
 }
 
 .test-case {
   display: flex;
+}
+
+.circle-red {
+	background-color: #ce1010;
+}
+.circle-green {
+	background-color: #20ea12;
 }

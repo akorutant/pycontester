@@ -41,13 +41,14 @@
             </div>
         </div>
     </div>
-    <div class="test-case">
+
+    <div class="row mb-3 block-editor">
+        <div class="test-case">
         {% for count in range(1, task.input.split("#") | length + 1) %}
-        <p class="circle mb-1" data-input="{{ ' '.join(task.input.split('#')[count - 1].split('!!!')).strip().replace(' ', '\n') }}" 
+        <p class="circle mb-1" data-input="{{ ' '.join(task.input.split('#')[count - 1].split('!!!')).strip().replace(' ', '\n') }}"
         data-output="{{ ' '.join(task.output.split('#')[count - 1].split('!!!')).strip().replace(' ', '\n') }}" id="{{ count }}">{{ count }}</p>
         {% endfor %}
     </div>
-    <div class="row mb-3 block-editor">
         <div class="col-md-8 p-0">
             <textarea id="code-{{ task.id }}" class="code"></textarea>
         </div>
@@ -55,7 +56,7 @@
             <div class="card-header text-white">Вердикт:</div>
             <div class="card-body text-white">
                 <p></p>
-                <button id="run-{{ task.id }}" type="button" class="btn btn-primary mt-3">Отправить</button>
+                <button id="run-{{ task.id }}"  data-run="run-{{ task.id }}" type="button" class="btn btn-primary mt-3">Отправить</button>
             </div>
         </div>
     </div>
