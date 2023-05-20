@@ -8,4 +8,6 @@ class AddContestForm(FlaskForm):
     contest_description = TextAreaField("Введите описание конкурса", validators=[DataRequired()])
     join_deadline = DateTimeLocalField("Дедлайн начала контеста",
                                        format="%Y-%m-%dT%H:%M", validators=[DataRequired()])
+    end_deadline = DateTimeLocalField("Дедлайн конца контеста",
+                                       format="%Y-%m-%dT%H:%M", validators=[DataRequired()])
     submit = SubmitField("Добавить")

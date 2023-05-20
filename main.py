@@ -176,6 +176,7 @@ def contests():
     contests_list = db_sess.query(Contest).all()
     return render_template('contests.html',
                            title="Список конкурсов",
+                           time_now=dt.datetime.now(),
                            contests=contests_list)
 
 
@@ -196,6 +197,10 @@ def help():
 def contests_list(contest_id):
     db_sess = db_session.create_session()
     contest = db_sess.query(Contest).filter(Contest.id == contest_id).first()
+
+    if contest.end_deadline <= dt.datetime.now():
+        return redirect(url_for("contests"))
+
     task_data = contest.tasks
     return render_template('contest_code.html',
                            title=contest.title,
@@ -227,6 +232,8 @@ def contests_edit(id):
         if contests_data:
             form.contest_title.data = contests_data.title
             form.contest_description.data = contests_data.description
+            form.join_deadline.data = contests_data.join_deadline
+            form.end_deadline.data = contests_data.end_deadline
             form.submit.data = "Обновить"
         else:
             abort(404)
@@ -237,6 +244,8 @@ def contests_edit(id):
         if contests_data:
             contests_data.title = form.contest_title.data
             contests_data.description = form.contest_description.data
+            contests_data.join_deadline = form.join_deadline.data
+            contests_data.end_deadline = form.end_deadline.data
             db_sess.commit()
             return redirect(url_for("contests_teacher"))
         else:
@@ -258,7 +267,8 @@ def contests_add():
                 title=form.contest_title.data,
                 description=form.contest_description.data,
                 author_id=current_user.id,
-                deadline=form.join_deadline.data
+                join_deadline=form.join_deadline.data,
+                end_deadline=form.end_deadline.data
             )
             db_sess.add(contest)
             db_sess.commit()
@@ -361,8 +371,6 @@ def task_edit(contest_id, id):
         if task_data:
             form.task_title.data = task_data.title
             form.task_description.data = task_data.description
-            form.task_input.data = task_data.input
-            form.task_output.data = task_data.output
             form.submit.data = "Обновить"
         else:
             abort(404)
@@ -373,8 +381,8 @@ def task_edit(contest_id, id):
         if task_data:
             task_data.title = form.task_title.data
             task_data.description = form.task_description.data
-            task_data.input = form.task_input.data
-            task_data.output = form.task_output.data
+            task_data.input = str(form.task_input.data.read())[2:-1].strip().replace(r"\r\n", "!!!")
+            task_data.output = str(form.task_output.data.read())[2:-1].strip().replace(r"\r\n", "!!!")
             db_sess.commit()
             return redirect(url_for("tasks",
                                     contest_id=contest_id))

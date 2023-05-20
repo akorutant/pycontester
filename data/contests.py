@@ -22,6 +22,7 @@ class Contest(SqlAlchemyBase):
     description = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     author_id = sqlalchemy.Column(sqlalchemy.Integer,
                                   sqlalchemy.ForeignKey("teachers.user_id"))
-    deadline = sqlalchemy.Column(sqlalchemy.DateTime, nullable=False)
+    join_deadline = sqlalchemy.Column(sqlalchemy.DateTime, nullable=False)
+    end_deadline = sqlalchemy.Column(sqlalchemy.DateTime, nullable=False)
     teacher = orm.relationship('Teacher')
     tasks = orm.relationship('Task', secondary='contest_to_task', backref='contest')

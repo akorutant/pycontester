@@ -30,6 +30,17 @@
     </div>
     {% endfor %}
     </p>
+    <p>
+        {{ form.end_deadline.label(class="text-white") }}<br>
+
+        {{ form.end_deadline(class="form-control", placeholder="Дедлайн начала контеста", default=current_datetime)
+        }}<br>
+        {% for error in form.end_deadline.errors %}
+    <div class="alert alert-danger text-white" role="alert">
+        {{ error }}
+    </div>
+    {% endfor %}
+    </p>
 
     {{ form.submit(class="btn btn-primary") }}
 </form>
