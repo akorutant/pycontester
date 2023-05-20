@@ -1,4 +1,3 @@
-import datetime as dt
 import sqlalchemy
 from sqlalchemy.util.preloaded import orm
 
@@ -26,3 +25,4 @@ class Contest(SqlAlchemyBase):
     end_deadline = sqlalchemy.Column(sqlalchemy.DateTime, nullable=False)
     teacher = orm.relationship('Teacher')
     tasks = orm.relationship('Task', secondary='contest_to_task', backref='contest')
+    contest_results = orm.relationship("ContestResults")

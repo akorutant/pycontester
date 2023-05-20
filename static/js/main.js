@@ -43,11 +43,12 @@ editors.forEach((task) => {
 				let stdout = pyodide.runPython("sys.stdout.getvalue()");
 				
 				if (stdout.trim() == out_test.trim()) {
-				    test.classList.remove("bg-danger")
+				    test.classList.remove("bg-danger");
 					test.classList.add("bg-success");
 					test.textContent = "V"
 					count+=1
 				} else {
+					test.classList.remove("bg-danger");
 					test.classList.add("bg-danger");
 					test.textContent = "X"
 				}

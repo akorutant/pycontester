@@ -71,27 +71,28 @@ def register():
                                    title='Регистрация',
                                    form=form,
                                    message="Такой пользователь уже есть")
-        user = User(
-            login=form.login.data,
-            firstname=form.firstname.data,
-            surname=form.surname.data,
-            patronymic=form.patronymic.data,
-            job_title=form.job_title.data,
-            email=form.email.data
-        )
-
-        user.set_password(form.password.data)
-        db_sess.add(user)
-        db_sess.commit()
-
-        if form.job_title.data == "teacher":
-            user = db_sess.query(User).filter_by(email=form.email.data).first()
-            teacher = Teacher(
-                user_id=user.id
+        if form.select.data:
+            user = User(
+                login=form.login.data,
+                firstname=form.firstname.data,
+                surname=form.surname.data,
+                patronymic=form.patronymic.data,
+                job_title=form.job_title.data,
+                email=form.email.data
             )
-            db_sess.add(teacher)
+
+            user.set_password(form.password.data)
+            db_sess.add(user)
             db_sess.commit()
-        return redirect(url_for('login'))
+
+            if form.job_title.data == "teacher":
+                user = db_sess.query(User).filter_by(email=form.email.data).first()
+                teacher = Teacher(
+                    user_id=user.id
+                )
+                db_sess.add(teacher)
+                db_sess.commit()
+            return redirect(url_for('login'))
     return render_template('register.html',
                            title='Регистрация',
                            form=form)

@@ -84,8 +84,17 @@
     {% endfor %}
     </p>
 
+    <p>
+        {{ form.select.label(class="text-white") }}<br>
+        {{ form.select(class="") }}<br>
+        {% for error in form.select.errors %}
+    <p class="alert alert-danger" role="alert">
+        {{ error }}
+    </p>
+    {% endfor %}
+    </p>
 
-    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+    <p class="text-white">{{ form.submit(type="submit", class="btn btn-primary") }}</p>
     {{message}}
 </form>
 {% endblock %}
