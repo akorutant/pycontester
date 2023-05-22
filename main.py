@@ -420,6 +420,12 @@ def user_avatar():
     return h
 
 
+@app.route("/get_contests_data")
+@login_required
+def get_contest_data():
+    ...
+
+
 @app.errorhandler(503)
 def not_found(error):
     return render_template('503error.html',

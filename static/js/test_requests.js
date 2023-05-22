@@ -1,5 +1,4 @@
 function sendRequest(method, url, body = null) {
-  return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest()
 
     xhr.open(method, url)
@@ -20,18 +19,5 @@ function sendRequest(method, url, body = null) {
     }
 
     xhr.send(JSON.stringify(body))
-  })
 }
 
-// sendRequest('GET', requestURL)
-//   .then(data => console.log(data))
-//   .catch(err => console.log(err))
-
-// const body = {
-//   name: 'Vladilen',
-//   age: 26
-// }
-
-// sendRequest('POST', requestURL, body)
-//   .then(data => console.log(data))
-//   .catch(err => console.log(err))
