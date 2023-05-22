@@ -1,7 +1,7 @@
 import os
 import datetime as dt
 
-from flask import Flask, render_template, make_response, request, abort, url_for, flash
+from flask import Flask, render_template, make_response, request, abort, url_for, flash, jsonify
 from flask_restful import abort, Api
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.utils import redirect
@@ -420,10 +420,12 @@ def user_avatar():
     return h
 
 
-@app.route("/get_contests_data")
+@app.route("/get_contests_data", methods=["POST"])
 @login_required
 def get_contest_data():
-    ...
+	if request.method == "POST":
+		data = request.get_json()
+		return jsonify(data)
 
 
 @app.errorhandler(503)

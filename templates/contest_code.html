@@ -53,16 +53,15 @@
             <textarea id="code-{{ task.id }}" class="code"></textarea>
         </div>
         <div class="card card-background col-md-4">
-                <button id="run-{{ task.id }}"  data-run="run-{{ task.id }}" type="button" class="btn btn-primary mt-3">Отправить</button>
+                <button id="run-{{ task.id }}"  data-run="run-{{ task.id }}" type="button" class="task-btn btn btn-primary mt-3">Отправить</button>
             </div>
         </div>
     </div>
 
     {% endfor %}
-    <button class="btn btn-primary">Завершить</button>
+    <button class="btn btn-primary" id="end-contest">Завершить</button>
 </div>
 {% block scripts %}
 <script src="/static/js/main.js"></script>
-<script src="/static/js/test_requests.js"></script>
 {% endblock %}
 {% endblock %}

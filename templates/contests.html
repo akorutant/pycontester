@@ -8,7 +8,8 @@
         <div class="card-header text-white">{{ contest.title }}</div>
         <div class="card-body text-white">
             <p class="card-text">{{ contest.description }}</p>
-            <p class="card-text">Начало: {{ contest.join_deadline }}<br>Конец: {{ contest.end_deadline }}</p>
+            <p class="card-text">Начало: {{ contest.join_deadline.strftime('%d.%m.%Y %H:%M') }}
+				<br>Конец: {{ contest.end_deadline.strftime('%d.%m.%Y %H:%M') }}</p>
             {% if time_now < contest.join_deadline %}
             <p class="card-text">Участие в конкурсе ещё не началось.</p>
             {% elif contest.join_deadline <= time_now < contest.end_deadline %}

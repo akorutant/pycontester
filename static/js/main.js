@@ -1,5 +1,5 @@
 let editors = document.querySelectorAll(".block-editor");
-
+let endButton = document.querySelector("#end-contest");
 editors.forEach((task) => {
 	const editor = CodeMirror.fromTextArea(task.querySelector("textarea"), {
 		mode: {
@@ -21,6 +21,7 @@ editors.forEach((task) => {
 		return pyodide;
 	}
 	let confirmButton = task.querySelector("button");
+	
 	let pyodideReadyPromise = main();
 	async function evaluatePython() {
 		let pyodide = await pyodideReadyPromise;
@@ -48,7 +49,7 @@ editors.forEach((task) => {
 					test.textContent = "V"
 					count+=1
 				} else {
-					test.classList.remove("bg-danger");
+					test.classList.remove("bg-success");
 					test.classList.add("bg-danger");
 					test.textContent = "X"
 				}
@@ -62,6 +63,31 @@ editors.forEach((task) => {
 		}
 	}
 
-	
+
 	confirmButton.addEventListener("click", evaluatePython);
+	
 });
+
+endButton.addEventListener("click", () => {
+	const xhr = new XMLHttpRequest()
+  
+	xhr.open('POST', '/get_contests_data')
+
+	xhr.responseType = 'json'
+	xhr.setRequestHeader('Content-Type', 'application/json')
+
+	xhr.onload = () => {
+	  if (xhr.status >= 400) {
+		console.error(xhr.response)
+	  } else {
+		location.reload();
+		console.log(xhr.response)
+	  }
+	}
+
+	xhr.onerror = () => {
+		console.log(xhr.response)
+	}
+	let answers = document.querySelectorAll("button.task-btn[disabled]")
+	xhr.send(JSON.stringify({tootalCount: editors.length, count: answers.length}))
+})
