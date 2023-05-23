@@ -24,10 +24,3 @@
 .test-case {
   display: flex;
 }
-
-.circle-red {
-	background-color: #ce1010;
-}
-.circle-green {
-	background-color: #20ea12;
-}

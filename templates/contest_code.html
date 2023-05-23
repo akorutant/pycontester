@@ -13,53 +13,57 @@
 
 {% block content %}
 <div class="container-fluid mt-3  text-white">
-    {% for task in tasks %}
-    <h1>Задание №{{ tasks.index(task) + 1}}: {{ task.title }}</h1>
-    <div class="row">
-        <div class="card card-background mb-3">
-            <div class="card-header text-white">Условие:</div>
-            <div class="card-body text-white">
-                <p class="card-text m-0">{{ task.description }} </p>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="card card-background mb-3 col-md-6">
-            <div class="card-header text-white">Входные данные:</div>
-            <div class="card-body text-white">
-                {% for row in task.input.split("#")[0].split("!!!") %}
-                <p class="m-0">{{ row }}</p>
-                {% endfor %}
-            </div>
-        </div>
-        <div class="card card-background mb-3 col-md-6">
-            <div class="card-header text-white">Выходные данные</div>
-            <div class="card-body text-white">
-                {% for row in task.output.split("#")[0].split("!!!")  %}
-                <p class="m-0">{{ row }}</p>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
+	{% for task in tasks %}
+	<h1 data-contest_id="{{ contest.id }}">Задание №{{ tasks.index(task) + 1}}: {{ task.title }}</h1>
+	<div class="row">
+		<div class="card card-background mb-3">
+			<div class="card-header text-white">Условие:</div>
+			<div class="card-body text-white">
+				<p class="card-text m-0">{{ task.description }}</p>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="card card-background mb-3 col-md-6">
+			<div class="card-header text-white">Входные данные:</div>
+			<div class="card-body text-white">
+				{% for row in task.input.split("#")[0].split("!!!") %}
+				<p class="m-0">{{ row }}</p>
+				{% endfor %}
+			</div>
+		</div>
+		<div class="card card-background mb-3 col-md-6">
+			<div class="card-header text-white">Выходные данные</div>
+			<div class="card-body text-white">
+				{% for row in task.output.split("#")[0].split("!!!") %}
+				<p class="m-0">{{ row }}</p>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
 
-    <div class="row mb-3 block-editor">
-        <div class="test-case">
-        {% for count in range(1, task.input.split("#") | length + 1) %}
-        <p class="circle mb-1" data-input="{{ ' '.join(task.input.split('#')[count - 1].split('!!!')).strip().replace(' ', '\n') }}"
-        data-output="{{ ' '.join(task.output.split('#')[count - 1].split('!!!')).strip().replace(' ', '\n') }}" id="{{ count }}">{{ count }}</p>
-        {% endfor %}
-    </div>
-        <div class="col-md-8 p-0">
-            <textarea id="code-{{ task.id }}" class="code"></textarea>
-        </div>
-        <div class="card card-background col-md-4">
-                <button id="run-{{ task.id }}"  data-run="run-{{ task.id }}" type="button" class="task-btn btn btn-primary mt-3">Отправить</button>
-            </div>
-        </div>
-    </div>
+	<div class="row mb-3 block-editor">
+		<div class="test-case">
+			{% for count in range(1, task.input.split("#") | length + 1) %}
+			<p class="circle mb-1"
+				data-input="{{ ' '.join(task.input.split('#')[count - 1].split('!!!')).strip().replace(' ', '\n') }}"
+				data-output="{{ ' '.join(task.output.split('#')[count - 1].split('!!!')).strip().replace(' ', '\n') }}"
+				id="{{ count }}">{{ count }}</p>
+			{% endfor %}
+		</div>
+		<div class="col-md-8 p-0">
+			<textarea id="code-{{ task.id }}" class="code"></textarea>
+		</div>
+		<div class="card card-background col-md-4">
+			<button id="run-{{ task.id }}" data-run="run-{{ task.id }}" type="button"
+				class="task-btn btn btn-primary mt-3">Отправить</button>
+		</div>
+	</div>
 
-    {% endfor %}
-    <button class="btn btn-primary" id="end-contest">Завершить</button>
+
+{% endfor %}
+</div>
+<button class="btn btn-primary" id="end-contest">Завершить</button>
 </div>
 {% block scripts %}
 <script src="/static/js/main.js"></script>

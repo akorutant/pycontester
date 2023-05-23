@@ -12,10 +12,10 @@
 				<br>Конец: {{ contest.end_deadline.strftime('%d.%m.%Y %H:%M') }}</p>
             {% if time_now < contest.join_deadline %}
             <p class="card-text">Участие в конкурсе ещё не началось.</p>
-            {% elif contest.join_deadline <= time_now < contest.end_deadline %}
+            {% elif contest.join_deadline <= time_now < contest.end_deadline and contest.id not in contest_results%}
             <a href="{{ url_for('contests_list', contest_id=contest.id) }}" class="btn btn-primary">Участвовать</a>
-            {% elif contest.end_deadline <= time_now %}
-            <p class="card-text">Участие в конкурсе окончено.</p>
+            {% elif contest.end_deadline <= time_now or contest.id in contest_results %}
+            <a href="{{ url_for('contests_results', contest_id=contest.id) }}" class="btn btn-primary">Посмотреть результаты</a>
             {% endif %}
         </div>
     </div>

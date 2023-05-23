@@ -89,5 +89,7 @@ endButton.addEventListener("click", () => {
 		console.log(xhr.response)
 	}
 	let answers = document.querySelectorAll("button.task-btn[disabled]")
-	xhr.send(JSON.stringify({tootalCount: editors.length, count: answers.length}))
+	let contest = document.querySelector("h1");
+	xhr.send(JSON.stringify({tootalCount: editors.length, count: answers.length, 
+		contest_id: contest.dataset.contest_id}))
 })
