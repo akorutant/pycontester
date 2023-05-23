@@ -3,7 +3,6 @@ from sqlalchemy.util.preloaded import orm
 
 from .db_session import SqlAlchemyBase
 
-
 contest_to_task_table = sqlalchemy.Table(
     'contest_to_task',
     SqlAlchemyBase.metadata,
@@ -25,4 +24,4 @@ class Contest(SqlAlchemyBase):
     end_deadline = sqlalchemy.Column(sqlalchemy.DateTime, nullable=False)
     teacher = orm.relationship('Teacher')
     tasks = orm.relationship('Task', secondary='contest_to_task', backref='contest')
-    contest_results = orm.relationship("ContestResults")
+    contest_result = orm.relationship("ContestResults", back_populates='contest_item')

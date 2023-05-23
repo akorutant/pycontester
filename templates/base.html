@@ -60,7 +60,7 @@
                     {% if current_user.is_authenticated %}
                     {% if current_user.job_title == "teacher" %}
                     <li>
-                        <a class="nav-link text-white" href="{{ url_for('contests_teacher') }}">Мои конкурсы</a>
+                        <a class="nav-link text-white" href="{{ url_for('contests_teacher') }}">Мои соревнования</a>
                     </li>
                     <li>
                         <a class="nav-link text-white" href="{{ url_for('tasks_add') }}">Создать задание</a>
@@ -68,14 +68,14 @@
                     {% else %}
                     <li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="{{ url_for('contests') }}">Конкурсы</a>
+                            <a class="nav-link text-white" href="{{ url_for('contests') }}">Соревнования</a>
                         </li>
                         <a class="nav-link text-white" href="{{ url_for('code') }}">Редактор кода</a>
                     </li>
-                    {% endif %}
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="{{ url_for('results') }}">Результаты</a>
+                        <a class="nav-link text-white" href="{{ url_for('results') }}">Мои результаты</a>
                     </li>
+                    {% endif %}
                     {% endif %}
                     <li class="nav-item">
                         <a class="nav-link text-white" href="{{ url_for('help') }}">Поддержка</a>
@@ -107,7 +107,7 @@
         </div>
     </nav>
 </header>
-<main role="main" class="container">
+<main role="main" class="container content mt-5">
     {% block content %} {% endblock %}
 </main>
 <footer class="text-center text-lg-start navbar-background text-muted">
@@ -140,19 +140,19 @@
                     {% if current_user.is_authenticated %}
                     {% if current_user.job_title == "teacher" %}
                     <p>
-                        <a class="nav-link text-white" href="{{ url_for('contests_teacher') }}">Мои конкурсы</a>
+                        <a class="nav-link text-white" href="{{ url_for('contests_teacher') }}">Мои соревнования</a>
                     </p>
                     {% else %}
                     <p>
-                        <a href="{{ url_for('contests') }}" class="nav-link text-white">Конкурсы</a>
+                        <a href="{{ url_for('contests') }}" class="nav-link text-white">Соревнования</a>
                     </p>
                     <p>
                         <a class="nav-link text-white" href="{{ url_for('code') }}">Редактор кода</a>
                     </p>
-                    {% endif %}
                     <p>
-                        <a href="{{ url_for('results') }}" class="nav-link text-white">Результаты</a>
+                        <a class="nav-link text-white" href="{{ url_for('results') }}">Мои результаты</a>
                     </p>
+                    {% endif %}
                     <p>
                         <a class="nav-link text-white" href="{{ url_for('account', user_id=current_user.id) }}">Аккаунт</a>
                     </p>

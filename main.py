@@ -204,9 +204,12 @@ def help():
 def contests_list(contest_id):
     db_sess = db_session.create_session()
     contest = db_sess.query(Contest).filter(Contest.id == contest_id).first()
+
+
     contest_results = db_sess.query(ContestResults)\
-        .filter(ContestResults.id == contest_id)\
+        .filter(ContestResults.contest_id == contest_id)\
         .filter(current_user.id == ContestResults.student_id).first()
+
 
     if contest.end_deadline <= dt.datetime.now() or contest_results:
         return redirect(url_for("contests"))
@@ -228,7 +231,8 @@ def contests_teacher():
             Contest.author_id == current_user.id).all()
         return render_template("teacher_contests.html",
                                title="Список конкурсов",
-                               contests=contests_data)
+                               contests=contests_data,
+                               now=dt.datetime.now())
     return redirect(url_for("index"))
 
 
@@ -423,9 +427,13 @@ def task_edit(contest_id, id):
 
 
 @app.route("/results")
+@login_required
 def results():
+    db_sess = db_session.create_session()
+    results = db_sess.query(ContestResults).filter(ContestResults.student_id == current_user.id).all()
     return render_template("results.html",
-                           title="Результаты")
+                           title="Результаты",
+                           results=results)
 
 
 @app.route('/logout')

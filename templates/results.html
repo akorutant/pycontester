@@ -1,32 +1,43 @@
 {% extends "base.html" %} {% block content %}
 {% if results %}
-<div class="container mt-3 text-white">
-    <h1 class="mb-3">Результаты участников:</h1>
+<h1 class="text-white mt-2">Мои результаты:</h1>
+<table class="table text-white mt-5">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Соревнование</th>
+        <th scope="col">Результат</th>
+        <th scope="col">Итог</th>
+        <th scope="col">Сертификат</th>
+    </tr>
+    </thead>
+    <tbody>
     {% for result in results %}
-    <div class="card card-background mb-3">
-        <div class="card-header text-white">{{ result.title }}</div>
-        <div class="card-body text-white">
-            <p class="card-text">{{ result.description }}</p>
-        </div>
-    </div>
+    <tr>
+        <th scope="row">{{ loop.index }}</th>
+        <td>{{ result.contest_item.title }}</td>
+        <td>{{ result.complited }}/{{ result.count_tasks }}</td>
+        <td>
+            {% set a = result.complited %}
+            {% set b = result.count_tasks %}
+            {% if a == b %}
+            Диплом I степени
+            {% elif a / b * 100 | int > 80 %}
+            Диплом II степени
+            {% elif a / b * 100 | int > 60 %}
+            Диплом III степени
+            {% else %}
+            Участник
+            {% endif %}
+        </td>
+        <td>
+            <a class="btn btn-primary">Скачать сертификат</a>
+        </td>
+    </tr>
     {% endfor %}
-    <div class="card card-background mb-3">
-        <div class="card-header text-white text-center">Фотиев Денис</div>
-        <div class="card-body text-white">
-            <p class="card-text text-center">Занял 1 место по варке амфетамина по рецепту Уолтера
-                Уайта!!!</p>
-        </div>
-    </div>
-
-    <div class="card card-background mb-3">
-        <div class="card-header text-white text-center">Прудников Савелий</div>
-        <div class="card-body text-white">
-            <p class="card-text text-center">Занял 2 место по варке амфетамина по рецепту Уолтера
-                Уайта!!!</p>
-        </div>
-    </div>
-</div>
+    </tbody>
+</table>
 {% else %}
-    <h1 class="text-white mt-5">В данный момент нет результатов</h1>
+<h1 class="text-white mt-5">В данный момент нет результатов</h1>
 {% endif %}
 {% endblock %}

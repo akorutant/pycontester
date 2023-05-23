@@ -24,3 +24,8 @@
 .test-case {
   display: flex;
 }
+
+
+.content {
+	min-height:100vh;
+}
