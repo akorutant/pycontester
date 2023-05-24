@@ -1,11 +1,11 @@
 {% extends "base.html" %} {% block content %}
-<h1 class="text-white">Создать задание</h1>
+<h1 class="text-white text-center mt-5">Создать задание</h1>
 {% for message in get_flashed_messages() %}
 <div class="alert alert-success" role="alert">
     {{ message }}
 </div>
 {% endfor %}
-<form action="" method="post" class="text-white" enctype="multipart/form-data">
+<form action="" method="post" class="text-white col-md-8 offset-md-2 mt-5" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
     <div>
         {{ form.task_title.label(class="mb-2") }}

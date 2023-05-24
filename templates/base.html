@@ -73,10 +73,13 @@
                         <a class="nav-link text-white" href="{{ url_for('code') }}">Редактор кода</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="{{ url_for('results') }}">Мои результаты</a>
+                        <a class="nav-link text-white" href="{{ url_for('user_results', user_id=current_user.id) }}">Мои результаты</a>
                     </li>
                     {% endif %}
                     {% endif %}
+                    <li>
+                        <a href="{{ url_for('results') }}" class="nav-link text-white">Общие результаты</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link text-white" href="{{ url_for('help') }}">Поддержка</a>
                     </li>
@@ -150,13 +153,16 @@
                         <a class="nav-link text-white" href="{{ url_for('code') }}">Редактор кода</a>
                     </p>
                     <p>
-                        <a class="nav-link text-white" href="{{ url_for('results') }}">Мои результаты</a>
+                        <a class="nav-link text-white" href="{{ url_for('user_results', user_id=current_user.id) }}">Мои результаты</a>
                     </p>
                     {% endif %}
                     <p>
                         <a class="nav-link text-white" href="{{ url_for('account', user_id=current_user.id) }}">Аккаунт</a>
                     </p>
                     {% endif %}
+                    <p>
+                        <a href="{{ url_for('results') }}" class="nav-link text-white">Общие результаты</a>
+                    </p>
                     <p>
                         <a href="{{ url_for('help') }}" class="nav-link text-white">Поддержка</a>
                     </p>

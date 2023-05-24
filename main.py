@@ -1,7 +1,8 @@
 import os
+import openpyxl
 import datetime as dt
 
-from flask import Flask, render_template, make_response, request, abort, url_for, flash, jsonify
+from flask import Flask, render_template, make_response, request, abort, url_for, flash, jsonify, send_from_directory
 from flask_restful import abort, Api
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.utils import redirect
@@ -23,8 +24,10 @@ from forms.add_task_to_contest import AddTasksToContestForm
 from tasks_api import TaskResource
 
 
+
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "fjkFOEKFMOKMFIO3FMKLMkelfmOIJR3FMFKNFOU2IN3PIFNOI232F"
+app.config["UPLOAD_FOLDER"] = "./static/files"
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -181,7 +184,7 @@ def contests():
     contests_list = db_sess.query(Contest).all()
     contest_results = db_sess.query(ContestResults).filter(ContestResults.student_id == current_user.id).all()
     return render_template('contests.html',
-                           title="Список конкурсов",
+                           title="Список соревнований",
                            time_now=dt.datetime.now(),
                            contests=contests_list,
                            contest_results=[i.contest_id for i in contest_results])
@@ -205,11 +208,9 @@ def contests_list(contest_id):
     db_sess = db_session.create_session()
     contest = db_sess.query(Contest).filter(Contest.id == contest_id).first()
 
-
-    contest_results = db_sess.query(ContestResults)\
-        .filter(ContestResults.contest_id == contest_id)\
+    contest_results = db_sess.query(ContestResults) \
+        .filter(ContestResults.contest_id == contest_id) \
         .filter(current_user.id == ContestResults.student_id).first()
-
 
     if contest.end_deadline <= dt.datetime.now() or contest_results:
         return redirect(url_for("contests"))
@@ -230,7 +231,7 @@ def contests_teacher():
         contests_data = db_sess.query(Contest).filter(
             Contest.author_id == current_user.id).all()
         return render_template("teacher_contests.html",
-                               title="Список конкурсов",
+                               title="Список соревнований",
                                contests=contests_data,
                                now=dt.datetime.now())
     return redirect(url_for("index"))
@@ -240,35 +241,37 @@ def contests_teacher():
 @login_required
 def contests_edit(id):
     form = AddContestForm()
-    if request.method == "GET":
-        db_sess = db_session.create_session()
-        contests_data = db_sess.query(Contest).filter(Contest.id == id,
-                                                      Contest.author_id == current_user.id).first()
-        if contests_data:
-            form.contest_title.data = contests_data.title
-            form.contest_description.data = contests_data.description
-            form.join_deadline.data = contests_data.join_deadline
-            form.end_deadline.data = contests_data.end_deadline
-            form.submit.data = "Обновить"
-        else:
-            abort(404)
-    if form.validate_on_submit():
-        db_sess = db_session.create_session()
-        contests_data = db_sess.query(Contest).filter(Contest.id == id,
-                                                      Contest.author_id == current_user.id).first()
-        if contests_data:
-            contests_data.title = form.contest_title.data
-            contests_data.description = form.contest_description.data
-            contests_data.join_deadline = form.join_deadline.data
-            contests_data.end_deadline = form.end_deadline.data
-            db_sess.commit()
-            return redirect(url_for("contests_teacher"))
-        else:
-            abort(404)
-    return render_template("contests_add.html",
-                           title="Редакторование конкурcов",
-                           form=form,
-                           current_datetime=dt.datetime.now())
+    if current_user.job_title == "teacher":
+        if request.method == "GET":
+            db_sess = db_session.create_session()
+            contests_data = db_sess.query(Contest).filter(Contest.id == id,
+                                                          Contest.author_id == current_user.id).first()
+            if contests_data:
+                form.contest_title.data = contests_data.title
+                form.contest_description.data = contests_data.description
+                form.join_deadline.data = contests_data.join_deadline
+                form.end_deadline.data = contests_data.end_deadline
+                form.submit.data = "Обновить"
+            else:
+                abort(404)
+        if form.validate_on_submit():
+            db_sess = db_session.create_session()
+            contests_data = db_sess.query(Contest).filter(Contest.id == id,
+                                                          Contest.author_id == current_user.id).first()
+            if contests_data:
+                contests_data.title = form.contest_title.data
+                contests_data.description = form.contest_description.data
+                contests_data.join_deadline = form.join_deadline.data
+                contests_data.end_deadline = form.end_deadline.data
+                db_sess.commit()
+                return redirect(url_for("contests_teacher"))
+            else:
+                abort(404)
+        return render_template("contests_add.html",
+                               title="Редакторование конкурcов",
+                               form=form,
+                               current_datetime=dt.datetime.now())
+    return redirect(url_for("index"))
 
 
 @app.route("/contests/add", methods=["GET", "POST"])
@@ -298,15 +301,17 @@ def contests_add():
 @app.route("/contest_delete/<int:id>", methods=["GET", "POST"])
 @login_required
 def contest_delete(id):
-    db_sess = db_session.create_session()
-    contests_data = db_sess.query(Contest).filter(Contest.id == id,
-                                                  Contest.author_id == current_user.id).first()
-    if contests_data:
-        db_sess.delete(contests_data)
-        db_sess.commit()
-    else:
-        abort(404)
-    return redirect(url_for("contests_teacher"))
+    if current_user.job_title == "teacher":
+        db_sess = db_session.create_session()
+        contests_data = db_sess.query(Contest).filter(Contest.id == id,
+                                                      Contest.author_id == current_user.id).first()
+        if contests_data:
+            db_sess.delete(contests_data)
+            db_sess.commit()
+        else:
+            abort(404)
+        return redirect(url_for("contests_teacher"))
+    return redirect(url_for("index"))
 
 
 @app.route("/contest/results/<int:contest_id>")
@@ -315,32 +320,33 @@ def contests_results(contest_id):
     db_sess = db_session.create_session()
     contest = db_sess.query(Contest).filter(Contest.id == contest_id).first()
     contest_results = db_sess.query(ContestResults).filter(ContestResults.contest_id == contest_id).all()
-    #students = db_sess.query(User).filter(User.id.in_([i.student_id for i in contest_results]))
     return render_template('contest_results.html', contest=contest, results=contest_results)
 
 
 @app.route("/tasks/<int:contest_id>", methods=['GET', 'POST'])
 @login_required
 def tasks(contest_id):
-    form = AddTasksToContestForm()
-    db_sess = db_session.create_session()
-    tasks_data = db_sess.query(Task).filter(
-        Task.author_id == current_user.id).all()
-    contest_data = db_sess.query(Contest).filter(
-        Contest.id == contest_id).first()
-    if form.validate_on_submit():
-        task_id = request.form.get('id')
-        task = db_sess.query(Task).filter(Task.id == task_id).first()
-        contest_data.tasks.append(task)
-        db_sess.commit()
-    if not tasks_data:
-        return redirect(url_for("tasks_add",
-                                contest_id=contest_id))
-    return render_template("tasks.html",
-                           title="Список конкурсов",
-                           tasks=tasks_data,
-                           contest=contest_data,
-                           form=form)
+    if current_user.job_title == "teacher":
+        form = AddTasksToContestForm()
+        db_sess = db_session.create_session()
+        tasks_data = db_sess.query(Task).filter(
+            Task.author_id == current_user.id).all()
+        contest_data = db_sess.query(Contest).filter(
+            Contest.id == contest_id).first()
+        if form.validate_on_submit():
+            task_id = request.form.get('id')
+            task = db_sess.query(Task).filter(Task.id == task_id).first()
+            contest_data.tasks.append(task)
+            db_sess.commit()
+        if not tasks_data:
+            return redirect(url_for("tasks_add",
+                                    contest_id=contest_id))
+        return render_template("tasks.html",
+                               title="Список соревнований",
+                               tasks=tasks_data,
+                               contest=contest_data,
+                               form=form)
+    return redirect(url_for("index"))
 
 
 @app.route("/tasks/add", methods=["GET", "POST"])
@@ -353,9 +359,9 @@ def tasks_add():
             input_file = form.task_input.data
             output_file = form.task_output.data
             input_file = str(input_file.read())[
-                2:-1].strip().replace(r"\r\n", "!!!")
+                         2:-1].strip().replace(r"\r\n", "!!!")
             output_file = str(output_file.read())[
-                2:-1].strip().replace(r"\r\n", "!!!")
+                          2:-1].strip().replace(r"\r\n", "!!!")
 
             task = Task(
                 title=form.task_title.data,
@@ -378,62 +384,78 @@ def tasks_add():
 
 @app.route("/task_delete/<int:contest_id>/<int:id>")
 def task_delete(contest_id, id):
-    db_sess = db_session.create_session()
-    task_data = db_sess.query(Task).filter(Task.id == id).first()
-    if task_data:
-        contest = db_sess.query(Contest).filter(
-            Contest.id == contest_id).first()
-        contest.tasks.remove(task_data)
-        db_sess.commit()
-    else:
-        abort(404)
-    return redirect(url_for("tasks", contest_id=contest_id))
+    if current_user.job_title == "teacher":
+        db_sess = db_session.create_session()
+        task_data = db_sess.query(Task).filter(Task.id == id).filter(Task.author_id == current_user.id).first()
+        if task_data:
+            contest = db_sess.query(Contest).filter(
+                Contest.id == contest_id).first()
+            contest.tasks.remove(task_data)
+            db_sess.commit()
+        else:
+            abort(404)
+        return redirect(url_for("tasks", contest_id=contest_id))
+    return redirect(url_for("index"))
 
 
 @app.route("/tasks/<int:contest_id>/<int:id>", methods=['GET', 'POST'])
 @login_required
 def task_edit(contest_id, id):
-    form = AddTasksForContestForm()
-    if request.method == "GET":
+    if current_user.job_title == "teacher":
+        form = AddTasksForContestForm()
         db_sess = db_session.create_session()
-        task_data = db_sess.query(Task).filter(Task.id == id,
-                                               Task.author_id == current_user.id).first()
-        if task_data:
-            form.task_title.data = task_data.title
-            form.task_description.data = task_data.description
-            form.submit.data = "Обновить"
-        else:
-            abort(404)
-    if form.validate_on_submit():
-        db_sess = db_session.create_session()
-        task_data = db_sess.query(Task).filter(Contest.id == id,
-                                               Task.author_id == current_user.id).first()
-        if task_data:
-            task_data.title = form.task_title.data
-            task_data.description = form.task_description.data
-            task_data.input = str(form.task_input.data.read())[
-                2:-1].strip().replace(r"\r\n", "!!!")
-            task_data.output = str(form.task_output.data.read())[
-                2:-1].strip().replace(r"\r\n", "!!!")
-            db_sess.commit()
-            return redirect(url_for("tasks",
-                                    contest_id=contest_id))
-        else:
-            abort(404)
+        task_data = db_sess.query(Task).filter(Task.id == id).first()
+        if request.method == "GET":
+            db_sess = db_session.create_session()
+            task_data = db_sess.query(Task).filter(Task.id == id,
+                                                   Task.author_id == current_user.id).first()
+            if task_data:
+                form.task_title.data = task_data.title
+                form.task_description.data = task_data.description
+                form.submit.data = "Обновить"
+            else:
+                abort(404)
+        if form.validate_on_submit():
+            db_sess = db_session.create_session()
+            task_data = db_sess.query(Task).filter(Contest.id == id,
+                                                   Task.author_id == current_user.id).first()
+            if task_data:
+                task_data.title = form.task_title.data
+                task_data.description = form.task_description.data
+                task_data.input = str(form.task_input.data.read())[
+                                  2:-1].strip().replace(r"\r\n", "!!!")
+                task_data.output = str(form.task_output.data.read())[
+                                   2:-1].strip().replace(r"\r\n", "!!!")
+                db_sess.commit()
+                return redirect(url_for("tasks",
+                                        contest_id=contest_id))
+            else:
+                abort(404)
 
-    return render_template("add_task_form.html",
-                           title="Редактор задачи",
-                           form=form)
+        return render_template("add_task_form.html",
+                               title="Редактор задачи",
+                               form=form)
+    return redirect(url_for("index"))
+
+
+@app.route("/results/<int:user_id>")
+@login_required
+def user_results(user_id):
+    if current_user.job_title == "student":
+        db_sess = db_session.create_session()
+        results_data = db_sess.query(ContestResults).filter(ContestResults.student_id == current_user.id).all()
+        return render_template("user_results.html",
+                               title="Результаты",
+                               results=results_data)
+    return redirect(url_for("index"))
 
 
 @app.route("/results")
 @login_required
 def results():
     db_sess = db_session.create_session()
-    results = db_sess.query(ContestResults).filter(ContestResults.student_id == current_user.id).all()
-    return render_template("results.html",
-                           title="Результаты",
-                           results=results)
+    contests_data = db_sess.query(Contest).filter(Contest.end_deadline <= dt.datetime.now()).all()
+    return render_template("results.html", contests=contests_data)
 
 
 @app.route('/logout')
@@ -450,9 +472,9 @@ def user_avatar():
     if not img:
         with open('static/img/avatar.jpeg', 'rb') as image:
             img = image.read()
-    h = make_response(img)
-    h.headers['Content-Type'] = 'image/png'
-    return h
+    avatar = make_response(img)
+    avatar.headers['Content-Type'] = 'image/png'
+    return avatar
 
 
 @app.route("/get_contests_data", methods=["POST"])
@@ -461,16 +483,52 @@ def get_contest_data():
     if request.method == "POST":
         data = request.get_json()
         db_sess = db_session.create_session()
-        contest_results = ContestResults(
-            student_id=current_user.id,
-            contest_id=data['contest_id'],
-            complited=data['count'],
-            count_tasks=data['tootalCount']
-        )
-        db_sess.add(contest_results)
-        db_sess.commit()
+        if 'count' in data:
+            contest_results = ContestResults(
+                student_id=current_user.id,
+                contest_id=data['contest_id'],
+                complited=data['count'],
+                count_tasks=data['totalCount']
+            )
+            db_sess.add(contest_results)
+            db_sess.commit()
 
-        return jsonify(data)
+            return jsonify(data)
+        return jsonify({"error": "No data."})
+
+
+@app.route("/download/excel/<int:contest_id>")
+@login_required
+def download_excel(contest_id):
+    db_sess = db_session.create_session()
+    wb = openpyxl.Workbook()
+    wb.remove(wb.active)
+    wb.create_sheet("Результаты")
+    ws = wb.active
+    cols = ["Фамилия", "Имя", "Отчество", "Результат", "Итог"]
+    index_cols = 0
+    users_data = db_sess.query(ContestResults).filter(ContestResults.contest_id == contest_id).all()
+    for col in ws.iter_cols(min_row=1, max_col=5, max_row=1):
+        for cell in col:
+            cell.value = cols[index_cols]
+            index_cols += 1
+
+    for user_data in enumerate(users_data):
+        ws[f'A{user_data[0] + 2}'] = user_data[1].student.surname
+        ws[f'B{user_data[0] + 2}'] = user_data[1].student.firstname
+        ws[f'C{user_data[0] + 2}'] = user_data[1].student.patronymic
+        ws[f'D{user_data[0] + 2}'] = f"{user_data[1].complited}/{user_data[1].count_tasks}"
+        if user_data[1].complited == user_data[1].count_tasks:
+            ws[f'E{user_data[0] + 2}'] = "Диплом I степени"
+        elif int(user_data[1].complited / user_data[1].count_tasks * 100) > 80:
+            ws[f'E{user_data[0] + 2}'] = "Диплом II степени"
+        elif int(user_data[1].complited / user_data[1].count_tasks * 100) > 60:
+            ws[f'E{user_data[0] + 2}'] = "Диплом III степени"
+        else:
+            ws[f'E{user_data[0] + 2}'] = "Участник"
+    wb.save("./static/files/results.xlsx")
+    flash('Файл скачан!')
+    return send_from_directory("./static/files", "results.xlsx", as_attachment=True)
 
 
 @app.errorhandler(503)
