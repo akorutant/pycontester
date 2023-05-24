@@ -319,7 +319,8 @@ def contest_delete(id):
 def contests_results(contest_id):
     db_sess = db_session.create_session()
     contest = db_sess.query(Contest).filter(Contest.id == contest_id).first()
-    contest_results = db_sess.query(ContestResults).filter(ContestResults.contest_id == contest_id).all()
+    contest_results = db_sess.query(ContestResults).filter(ContestResults.contest_id == contest_id)\
+        .order_by(ContestResults.complited.desc()).all()
     return render_template('contest_results.html', contest=contest, results=contest_results)
 
 
@@ -527,7 +528,6 @@ def download_excel(contest_id):
         else:
             ws[f'E{user_data[0] + 2}'] = "Участник"
     wb.save("./static/files/results.xlsx")
-    flash('Файл скачан!')
     return send_from_directory("./static/files", "results.xlsx", as_attachment=True)
 
 
@@ -568,4 +568,4 @@ def unauthorized(error):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5050)

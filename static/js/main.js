@@ -13,9 +13,6 @@ editors.forEach((task) => {
 		matchBrackets: true,
 	});
 
-	editor.setValue(
-		"a = int(input())\nb = int(input())\nc = int(input())\nprint(a + b + c)"
-	);
 	function main() {
 		let pyodide = loadPyodide({});
 		return pyodide;

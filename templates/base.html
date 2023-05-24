@@ -47,7 +47,7 @@
             <div
                     class="collapse navbar-collapse justify-content-between"
                     id="navbarSupportedContent"
-            >   
+            >
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
                         <a
@@ -67,19 +67,20 @@
                     </li>
                     {% else %}
                     <li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" href="{{ url_for('contests') }}">Соревнования</a>
-                        </li>
-                        <a class="nav-link text-white" href="{{ url_for('code') }}">Редактор кода</a>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{{ url_for('contests') }}">Соревнования</a>
+                    </li>
+                    <a class="nav-link text-white" href="{{ url_for('code') }}">Редактор кода</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="{{ url_for('user_results', user_id=current_user.id) }}">Мои результаты</a>
+                        <a class="nav-link text-white" href="{{ url_for('user_results', user_id=current_user.id) }}">Мои
+                            результаты</a>
                     </li>
-                    {% endif %}
                     {% endif %}
                     <li>
                         <a href="{{ url_for('results') }}" class="nav-link text-white">Общие результаты</a>
                     </li>
+                    {% endif %}
                     <li class="nav-item">
                         <a class="nav-link text-white" href="{{ url_for('help') }}">Поддержка</a>
                     </li>
@@ -124,7 +125,8 @@
                         <i class="fas fa-gem me-3 text-secondary"></i
                         >IT-КУБ Сыктывкар
                     </h6>
-                    <p>Наш сайт написан двумя учениками из IT-КУБА для проведения локальных конкурсов по программированию на языке программирования Python.</p>
+                    <p>Наш сайт написан двумя учениками из IT-КУБА для проведения локальных конкурсов по
+                        программированию на языке программирования Python.</p>
                 </div>
                 <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
                     <h6 class="text-uppercase fw-bold mb-4">Ссылки на нас</h6>
@@ -153,16 +155,18 @@
                         <a class="nav-link text-white" href="{{ url_for('code') }}">Редактор кода</a>
                     </p>
                     <p>
-                        <a class="nav-link text-white" href="{{ url_for('user_results', user_id=current_user.id) }}">Мои результаты</a>
-                    </p>
-                    {% endif %}
-                    <p>
-                        <a class="nav-link text-white" href="{{ url_for('account', user_id=current_user.id) }}">Аккаунт</a>
+                        <a class="nav-link text-white" href="{{ url_for('user_results', user_id=current_user.id) }}">Мои
+                            результаты</a>
                     </p>
                     {% endif %}
                     <p>
                         <a href="{{ url_for('results') }}" class="nav-link text-white">Общие результаты</a>
                     </p>
+                    <p>
+                        <a class="nav-link text-white"
+                           href="{{ url_for('account', user_id=current_user.id) }}">Аккаунт</a>
+                    </p>
+                    {% endif %}
                     <p>
                         <a href="{{ url_for('help') }}" class="nav-link text-white">Поддержка</a>
                     </p>
