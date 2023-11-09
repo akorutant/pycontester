@@ -4,4 +4,4 @@
 
 паспорт проекта: https://docs.google.com/document/d/1vIgU5lKSHg4Yn4u2G2ot0JSs_7iL4Z9YxwQrsQ0WctA/edit?usp=sharing
 
-презентация: https://docs.google.com/presentation/d/1QXtwT5Qq1WgwSQj0iUE1xg8sQwZRWvbc/edit?usp=sharing&ouid=103743807151894549728&rtpof=true&sd=true
+презентация: https://docs.google.com/presentation/d/1zUNCFEiAngbOwgf0ZurWlrW9Z-9KWqU8DQQ1ZF2vcM8/edit?usp=sharing
