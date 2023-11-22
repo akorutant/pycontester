@@ -6,8 +6,11 @@ from .db_session import SqlAlchemyBase
 contest_to_task_table = sqlalchemy.Table(
     'contest_to_task',
     SqlAlchemyBase.metadata,
-    sqlalchemy.Column('contest', sqlalchemy.Integer, sqlalchemy.ForeignKey('contests.id')),
-    sqlalchemy.Column('task', sqlalchemy.Integer, sqlalchemy.ForeignKey('tasks.id'))
+    sqlalchemy.Column('contest', sqlalchemy.Integer, sqlalchemy.ForeignKey('contests.id',
+                                                                           ondelete='CASCADE')),
+    sqlalchemy.Column('task', sqlalchemy.Integer, sqlalchemy.ForeignKey('tasks.id',
+                                                                        ondelete='CASCADE'
+                                                                        ))
 )
 
 

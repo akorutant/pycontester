@@ -15,4 +15,3 @@ class Task(SqlAlchemyBase):
     output = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     author_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("teachers.user_id"))
     teacher = orm.relationship("Teacher")
-    contests = orm.relationship('Contest', secondary='contest_to_task', backref='task')

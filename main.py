@@ -42,6 +42,9 @@ if not os.path.isfile('database/db.sqlite'):
     with open('database/db.sqlite', 'w') as f:
         pass
 
+if not os.path.isdir("static/files"):
+    os.mkdir("static/files")
+
 db_session.global_init("database/db.sqlite")
 
 
@@ -288,8 +291,10 @@ def contests_add():
                 join_deadline=form.join_deadline.data,
                 end_deadline=form.end_deadline.data
             )
-            db_sess.add(contest)
-            db_sess.commit()
+            data = db_sess.query(Contest).filter(Contest.title == form.contest_title.data).first()
+            if not data:
+                db_sess.add(contest)
+                db_sess.commit()
             return redirect(url_for("contests_teacher"))
         return render_template("contests_add.html",
                                title="Добавление конкурcов",
@@ -485,14 +490,17 @@ def get_contest_data():
         data = request.get_json()
         db_sess = db_session.create_session()
         if 'count' in data:
-            contest_results = ContestResults(
-                student_id=current_user.id,
-                contest_id=data['contest_id'],
-                complited=data['count'],
-                count_tasks=data['totalCount']
-            )
-            db_sess.add(contest_results)
-            db_sess.commit()
+            contests_data = db_sess.query(Contest).filter(Contest.id == int(data['contest_id'])
+                                                          ,Contest.end_deadline <= dt.datetime.now()).all()
+            if not contests_data:
+                contest_results = ContestResults(
+                    student_id=current_user.id,
+                    contest_id=data['contest_id'],
+                    complited=data['count'],
+                    count_tasks=data['totalCount']
+                )
+                db_sess.add(contest_results)
+                db_sess.commit()
 
             return jsonify(data)
         return jsonify({"error": "No data."})
